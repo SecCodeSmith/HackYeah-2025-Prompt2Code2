@@ -1,9 +1,10 @@
 // File: Backend/Backend.Application/Features/Auth/Handlers/RefreshTokenCommandHandler.cs
 using Backend.Application.DTOs.Auth;
 using Backend.Application.Features.Auth.Commands;
+using Backend.Application.Interfaces;
 using Backend.Domain.Interfaces;
-using Backend.Infrastructure.Services;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Backend.Application.Features.Auth.Handlers;
 

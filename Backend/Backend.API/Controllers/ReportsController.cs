@@ -292,6 +292,113 @@ public class ReportsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Upload attachment to a report
+    /// </summary>
+    [HttpPost("{id}/attachments")]
+    [ProducesResponseType(typeof(AttachmentDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UploadAttachment(Guid id, [FromForm] IFormFile file)
+    {
+        try
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(new { message = "No file uploaded" });
+
+            var userId = GetCurrentUserId();
+            var command = new Backend.Application.Features.Attachments.Commands.UploadAttachmentCommand(id, file, userId);
+            var result = await _mediator.Send(command);
+            
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogWarning(ex, "Invalid attachment upload for Report {ReportId}", id);
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error uploading attachment to Report {ReportId}", id);
+            return StatusCode(500, new { message = "An error occurred while uploading the file" });
+        }
+    }
+
+    /// <summary>
+    /// Get all attachments for a report
+    /// </summary>
+    [HttpGet("{id}/attachments")]
+    [ProducesResponseType(typeof(List<AttachmentDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetReportAttachments(Guid id)
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+            var query = new Backend.Application.Features.Attachments.Queries.GetReportAttachmentsQuery(id, userId);
+            var result = await _mediator.Send(query);
+            
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving attachments for Report {ReportId}", id);
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Download an attachment
+    /// </summary>
+    [HttpGet("attachments/{attachmentId}")]
+    [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DownloadAttachment(Guid attachmentId)
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+            var query = new Backend.Application.Features.Attachments.Queries.GetAttachmentQuery(attachmentId, userId);
+            var (fileStream, fileName, contentType) = await _mediator.Send(query);
+            
+            return File(fileStream, contentType, fileName);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogWarning(ex, "Attachment not found: {AttachmentId}", attachmentId);
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error downloading attachment {AttachmentId}", attachmentId);
+            return StatusCode(500, new { message = "An error occurred while downloading the file" });
+        }
+    }
+
+    /// <summary>
+    /// Delete an attachment
+    /// </summary>
+    [HttpDelete("attachments/{attachmentId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteAttachment(Guid attachmentId)
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+            var command = new Backend.Application.Features.Attachments.Commands.DeleteAttachmentCommand(attachmentId, userId);
+            var result = await _mediator.Send(command);
+            
+            if (!result)
+                return NotFound(new { message = "Attachment not found" });
+            
+            return Ok(new { message = "Attachment deleted successfully" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting attachment {AttachmentId}", attachmentId);
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
     private Guid GetCurrentUserId()
     {
         var userIdClaim = User.FindFirst("userId")?.Value;

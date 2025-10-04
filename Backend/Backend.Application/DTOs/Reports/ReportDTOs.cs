@@ -62,6 +62,15 @@ public record ReportAttachmentDto(
     DateTime CreatedAt
 );
 
+public record AttachmentDto(
+    Guid Id,
+    Guid ReportId,
+    string FileName,
+    string ContentType,
+    long FileSize,
+    DateTime CreatedAt
+);
+
 public record ReportSummaryDto(
     Guid Id,
     string Title,
