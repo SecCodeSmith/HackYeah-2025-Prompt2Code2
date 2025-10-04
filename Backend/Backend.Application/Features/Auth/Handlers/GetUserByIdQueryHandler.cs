@@ -1,0 +1,41 @@
+// File: Backend/Backend.Application/Features/Auth/Handlers/GetUserByIdQueryHandler.cs
+using Backend.Application.DTOs.Auth;
+using Backend.Application.Features.Auth.Queries;
+using Backend.Domain.Interfaces;
+using MediatR;
+
+namespace Backend.Application.Features.Auth.Handlers;
+
+public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserDto?>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<GetUserByIdQueryHandler> _logger;
+
+    public GetUserByIdQueryHandler(
+        IUnitOfWork unitOfWork,
+        ILogger<GetUserByIdQueryHandler> logger)
+    {
+        _unitOfWork = unitOfWork;
+        _logger = logger;
+    }
+
+    public async Task<UserDto?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    {
+        var user = await _unitOfWork.Users.GetByIdAsync(request.UserId, cancellationToken);
+
+        if (user == null)
+        {
+            _logger.LogWarning("User not found: {UserId}", request.UserId);
+            return null;
+        }
+
+        return new UserDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Role = user.Role.ToString()
+        };
+    }
+}
