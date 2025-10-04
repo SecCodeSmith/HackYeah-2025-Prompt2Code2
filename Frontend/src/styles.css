@@ -51,3 +51,43 @@ textarea:focus::placeholder,
     color: #d1d5db !important;
   }
 }
+
+/* ========================================
+   PRIMENG DIALOG BACKGROUND FIX
+   ======================================== */
+/* Fix transparent background issue in PrimeNG modals */
+
+/* Dialog header - solid background with subtle border */
+.p-dialog .p-dialog-header {
+  @apply bg-white border-b border-gray-200;
+  padding: 1.25rem 1.5rem;
+}
+
+/* Dialog content - solid white background */
+.p-dialog .p-dialog-content {
+  @apply bg-white;
+  padding: 1.5rem;
+}
+
+/* Dialog footer - solid background matching header */
+.p-dialog .p-dialog-footer {
+  @apply bg-white border-t border-gray-200;
+  padding: 1rem 1.5rem;
+}
+
+/* Dialog mask (backdrop) - semi-transparent dark overlay */
+.p-dialog-mask {
+  @apply bg-black bg-opacity-50;
+}
+
+/* Ensure dialog itself has white background and proper shadow */
+.p-dialog {
+  @apply bg-white shadow-2xl rounded-lg;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: Add smooth backdrop blur effect for modern look */
+.p-dialog-mask.p-component-overlay {
+  backdrop-filter: blur(2px);
+}
+

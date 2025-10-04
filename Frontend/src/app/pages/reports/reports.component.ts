@@ -48,18 +48,21 @@ interface PriorityOption {
   template: `
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-7xl mx-auto">
-        <!-- Header -->
-        <div class="mb-6 flex justify-between items-center">
-          <div>
+        <!-- Header with Responsive Flex Layout -->
+        <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+          <div class="flex-1">
             <h1 class="text-3xl font-bold text-gray-900">Raporty komunikacji z UKNF</h1>
             <p class="text-gray-600 mt-1">Zarządzaj zgłoszeniami komunikacji</p>
           </div>
-          <p-button 
-            label="Nowy raport" 
-            icon="pi pi-plus" 
-            (onClick)="showCreateDialog = true"
-            severity="success">
-          </p-button>
+          <div class="flex-shrink-0">
+            <p-button 
+              label="Nowy raport" 
+              icon="pi pi-plus" 
+              (onClick)="showCreateDialog = true"
+              severity="success"
+              styleClass="w-full sm:w-auto">
+            </p-button>
+          </div>
         </div>
 
         <!-- Search and Filters Card -->
@@ -106,32 +109,42 @@ interface PriorityOption {
             </div>
           </div>
 
-          <!-- Action Buttons -->
-          <div class="flex gap-2 mt-4">
-            <p-button 
-              label="Szukaj" 
-              icon="pi pi-search" 
-              (onClick)="search()"
-              severity="primary">
-            </p-button>
-            <p-button 
-              label="Wyczyść" 
-              icon="pi pi-times" 
-              (onClick)="clearFilters()"
-              severity="secondary">
-            </p-button>
-            <p-button 
-              label="Eksport CSV" 
-              icon="pi pi-download" 
-              (onClick)="exportCSV()"
-              severity="help">
-            </p-button>
-            <p-button 
-              label="Eksport Excel" 
-              icon="pi pi-file-excel" 
-              (onClick)="exportExcel()"
-              severity="help">
-            </p-button>
+          <!-- Action Buttons with Responsive Layout -->
+          <div class="flex flex-col sm:flex-row gap-2 mt-4">
+            <div class="flex gap-2 flex-wrap">
+              <p-button 
+                label="Szukaj" 
+                icon="pi pi-search" 
+                (onClick)="search()"
+                severity="primary"
+                styleClass="flex-1 sm:flex-none">
+              </p-button>
+              <p-button 
+                label="Wyczyść" 
+                icon="pi pi-times" 
+                (onClick)="clearFilters()"
+                severity="secondary"
+                styleClass="flex-1 sm:flex-none">
+              </p-button>
+            </div>
+            <div class="flex gap-2 flex-wrap sm:ml-auto">
+              <p-button 
+                label="Eksport CSV" 
+                icon="pi pi-download" 
+                (onClick)="exportCSV()"
+                severity="help"
+                [outlined]="true"
+                styleClass="flex-1 sm:flex-none">
+              </p-button>
+              <p-button 
+                label="Eksport Excel" 
+                icon="pi pi-file-excel" 
+                (onClick)="exportExcel()"
+                severity="help"
+                [outlined]="true"
+                styleClass="flex-1 sm:flex-none">
+              </p-button>
+            </div>
           </div>
         </p-card>
 
@@ -305,15 +318,20 @@ interface PriorityOption {
           </div>
         </p-dialog>
 
-        <!-- Create/Edit Report Dialog -->
+        <!-- Create/Edit Report Dialog with Improved Grid Layout -->
         <p-dialog 
           [(visible)]="showCreateDialog" 
-          [style]="{width: '600px'}"
+          [style]="{width: '95vw', maxWidth: '650px'}"
           [header]="editMode ? 'Edytuj raport' : 'Nowy raport'"
-          [modal]="true">
-          <div class="space-y-4">
-            <div>
-              <label for="title" class="block font-semibold mb-2">Tytuł *</label>
+          [modal]="true"
+          [draggable]="false"
+          [resizable]="false">
+          <div class="grid grid-cols-1 gap-6">
+            <!-- Title Field - Full Width -->
+            <div class="col-span-1">
+              <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">
+                Tytuł <span class="text-red-500">*</span>
+              </label>
               <input 
                 id="title"
                 type="text" 
@@ -322,50 +340,72 @@ interface PriorityOption {
                 class="w-full"
                 placeholder="Wprowadź tytuł raportu" />
             </div>
-            <div>
-              <label for="description" class="block font-semibold mb-2">Opis *</label>
+
+            <!-- Description Field - Full Width -->
+            <div class="col-span-1">
+              <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">
+                Opis <span class="text-red-500">*</span>
+              </label>
               <textarea 
                 id="description"
                 pInputTextarea 
                 [(ngModel)]="reportForm.description"
                 rows="5"
                 class="w-full"
-                placeholder="Wprowadź opis raportu">
+                placeholder="Wprowadź szczegółowy opis raportu">
               </textarea>
             </div>
-            <div>
-              <label for="category" class="block font-semibold mb-2">Kategoria</label>
-              <input 
-                id="category"
-                type="text" 
-                pInputText 
-                [(ngModel)]="reportForm.category"
-                class="w-full"
-                placeholder="np. Zmiana danych, Reklamacja" />
-            </div>
-            <div>
-              <label for="priority" class="block font-semibold mb-2">Priorytet *</label>
-              <p-dropdown 
-                [(ngModel)]="reportForm.priority"
-                [options]="priorityOptions"
-                optionLabel="label"
-                optionValue="value"
-                class="w-full"
-                placeholder="Wybierz priorytet">
-              </p-dropdown>
+
+            <!-- Two Column Layout for Category and Priority -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Category Field -->
+              <div>
+                <label for="category" class="block text-sm font-semibold text-gray-700 mb-2">
+                  Kategoria
+                </label>
+                <input 
+                  id="category"
+                  type="text" 
+                  pInputText 
+                  [(ngModel)]="reportForm.category"
+                  class="w-full"
+                  placeholder="np. Zmiana danych" />
+              </div>
+
+              <!-- Priority Field -->
+              <div>
+                <label for="priority" class="block text-sm font-semibold text-gray-700 mb-2">
+                  Priorytet <span class="text-red-500">*</span>
+                </label>
+                <p-dropdown 
+                  [(ngModel)]="reportForm.priority"
+                  [options]="priorityOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  class="w-full"
+                  placeholder="Wybierz priorytet">
+                </p-dropdown>
+              </div>
             </div>
           </div>
+
+          <!-- Dialog Footer with Action Buttons -->
           <ng-template pTemplate="footer">
-            <p-button 
-              label="Anuluj" 
-              severity="secondary"
-              (onClick)="closeCreateDialog()">
-            </p-button>
-            <p-button 
-              [label]="editMode ? 'Zapisz zmiany' : 'Utwórz raport'" 
-              severity="primary"
-              (onClick)="saveReport()">
-            </p-button>
+            <div class="flex justify-end gap-3">
+              <p-button 
+                label="Anuluj" 
+                icon="pi pi-times"
+                severity="secondary"
+                [outlined]="true"
+                (onClick)="closeCreateDialog()">
+              </p-button>
+              <p-button 
+                [label]="editMode ? 'Zapisz zmiany' : 'Utwórz raport'" 
+                [icon]="editMode ? 'pi pi-check' : 'pi pi-plus'"
+                severity="success"
+                (onClick)="saveReport()">
+              </p-button>
+            </div>
           </ng-template>
         </p-dialog>
       </div>
@@ -373,18 +413,54 @@ interface PriorityOption {
   `,
   styles: [`
     :host ::ng-deep {
+      /* Table Styling */
       .p-datatable .p-datatable-tbody > tr > td {
         padding: 1rem;
+        vertical-align: middle;
       }
 
+      /* Tag Styling */
       .p-tag {
         font-size: 0.75rem;
         padding: 0.25rem 0.5rem;
       }
 
+      /* Button Styling */
       .p-button.p-button-rounded.p-button-text {
         width: 2rem;
         height: 2rem;
+      }
+
+      /* Dialog Styling for Better Form Layout */
+      .p-dialog .p-dialog-content {
+        padding: 1.5rem;
+        overflow-y: auto;
+      }
+
+      .p-dialog .p-dialog-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      /* Dropdown Full Width */
+      .p-dropdown {
+        width: 100%;
+      }
+
+      /* Input and Textarea Styling */
+      .p-inputtext,
+      .p-inputtextarea {
+        width: 100%;
+        font-size: 0.875rem;
+      }
+
+      /* Card Styling */
+      .p-card .p-card-body {
+        padding: 1.5rem;
+      }
+
+      .p-card .p-card-content {
+        padding: 0;
       }
     }
   `]

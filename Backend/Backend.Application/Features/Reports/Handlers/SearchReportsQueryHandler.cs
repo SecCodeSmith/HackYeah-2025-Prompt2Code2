@@ -1,6 +1,3 @@
-/* TEMP DISABLED - Complex DateTime/DTO issues need manual review
-TODO: Fix DateTime string conversions and DTO constructors before uncommenting
-
 // File: Backend/Backend.Application/Features/Reports/Handlers/SearchReportsQueryHandler.cs
 using Backend.Application.DTOs.Reports;
 using Backend.Application.Features.Reports.Queries;
@@ -30,21 +27,14 @@ public class SearchReportsQueryHandler : IRequestHandler<SearchReportsQuery, Pag
         var reportsList = allReports.ToList();
 
         // Apply filters
-        if (request.UserId.HasValue)
+        if (request.Status.HasValue)
         {
-            reportsList = reportsList.Where(r => r.UserId == request.UserId.Value).ToList();
+            reportsList = reportsList.Where(r => (int)r.Status == request.Status.Value).ToList();
         }
 
-        if (!string.IsNullOrWhiteSpace(request.Status))
+        if (request.Priority.HasValue)
         {
-            reportsList = reportsList.Where(r => 
-                r.Status.ToString().Equals(request.Status, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-
-        if (!string.IsNullOrWhiteSpace(request.Priority))
-        {
-            reportsList = reportsList.Where(r => 
-                r.Priority.ToString().Equals(request.Priority, StringComparison.OrdinalIgnoreCase)).ToList();
+            reportsList = reportsList.Where(r => (int)r.Priority == request.Priority.Value).ToList();
         }
 
         if (!string.IsNullOrWhiteSpace(request.Category))
@@ -60,14 +50,14 @@ public class SearchReportsQueryHandler : IRequestHandler<SearchReportsQuery, Pag
                 (r.Description != null && r.Description.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase))).ToList();
         }
 
-        if (request.FromDate.HasValue)
+        if (request.CreatedFrom.HasValue)
         {
-            reportsList = reportsList.Where(r => r.CreatedAt >= request.FromDate.Value).ToList();
+            reportsList = reportsList.Where(r => r.CreatedAt >= request.CreatedFrom.Value).ToList();
         }
 
-        if (request.ToDate.HasValue)
+        if (request.CreatedTo.HasValue)
         {
-            reportsList = reportsList.Where(r => r.CreatedAt <= request.ToDate.Value).ToList();
+            reportsList = reportsList.Where(r => r.CreatedAt <= request.CreatedTo.Value).ToList();
         }
 
         // Calculate pagination
@@ -82,43 +72,38 @@ public class SearchReportsQueryHandler : IRequestHandler<SearchReportsQuery, Pag
             .ToList();
 
         // Map to DTOs
-        var reportDtos = paginatedReports.Select(r => new ReportDto
-        {
-            Id = r.Id,
-            Title = r.Title,
-            Description = r.Description,
-            Status = r.Status.ToString(),
-            Priority = r.Priority.ToString(),
-            Category = r.Category,
-            UserId = r.UserId,
-            UserName = $"{r.User?.FirstName} {r.User?.LastName}",
-            SubmittedAt = r.SubmittedAt?.ToString("o"),
-            ReviewedAt = r.ReviewedAt?.ToString("o"),
-            ReviewNotes = r.ReviewNotes,
-            CreatedAt = r.CreatedAt.ToString("o"),
-            UpdatedAt = r.UpdatedAt?.ToString("o"),
-            Attachments = r.Attachments?.Select(a => new ReportAttachmentDto
-            {
-                Id = a.Id,
-                FileName = a.FileName,
-                ContentType = a.ContentType,
-                FileSize = a.FileSize,
-                CreatedAt = a.CreatedAt.ToString("o")
-            }).ToList() ?? new List<ReportAttachmentDto>()
-        }).ToList();
+        var reportDtos = paginatedReports.Select(r => new ReportDto(
+            Id: r.Id,
+            Title: r.Title,
+            Description: r.Description,
+            Status: r.Status.ToString(),
+            Priority: r.Priority.ToString(),
+            Category: r.Category,
+            UserId: r.UserId,
+            UserName: r.User != null ? $"{r.User.FirstName} {r.User.LastName}" : "Unknown",
+            SubmittedAt: r.SubmittedAt,
+            ReviewedAt: r.ReviewedAt,
+            ReviewNotes: r.ReviewNotes,
+            CreatedAt: r.CreatedAt,
+            UpdatedAt: r.UpdatedAt,
+            Attachments: r.Attachments?.Select(a => new ReportAttachmentDto(
+                Id: a.Id,
+                FileName: a.FileName,
+                ContentType: a.ContentType,
+                FileSize: a.FileSize,
+                CreatedAt: a.CreatedAt
+            )).ToList() ?? new List<ReportAttachmentDto>()
+        )).ToList();
 
         _logger.LogInformation("Found {Count} reports matching search criteria for page {PageNumber}", 
             reportDtos.Count, request.PageNumber);
 
-        return new PagedResult<ReportDto>
-        {
-            Items = reportDtos,
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize,
-            TotalCount = totalCount,
-            TotalPages = totalPages
-        };
+        return new PagedResult<ReportDto>(
+            Items: reportDtos,
+            PageNumber: request.PageNumber,
+            PageSize: request.PageSize,
+            TotalCount: totalCount,
+            TotalPages: totalPages
+        );
     }
 }
-
-*/
