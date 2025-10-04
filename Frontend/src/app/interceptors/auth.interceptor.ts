@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { AuthService } from './auth.service';
+import { AuthService } from '../services/auth.service';
 
 /**
  * HTTP Interceptor that automatically adds JWT token to all requests

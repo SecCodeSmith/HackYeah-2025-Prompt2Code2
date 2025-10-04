@@ -378,12 +378,12 @@ export class UserManagementComponent implements OnInit {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
   }
 
-  getRoleSeverity(role: string): 'success' | 'info' | 'warning' | 'danger' {
+  getRoleSeverity(role: string): 'success' | 'info' | 'warn' | 'danger' {
     switch (role.toLowerCase()) {
       case 'administrator':
         return 'danger';
       case 'supervisor':
-        return 'warning';
+        return 'warn';
       case 'user':
         return 'info';
       default:

@@ -12,11 +12,11 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { CardModule } from 'primeng/card';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputTextarea } from 'primeng/inputtextarea';
 import { CalendarModule } from 'primeng/calendar';
 
-import { ReportService, ReportDto, SearchReportsRequest } from '../services/report.service';
-import { AuthService } from '../services/auth.service';
+import { ReportService, ReportDto, SearchReportsRequest } from '../../services/report.service';
+import { AuthService } from '../../services/auth.service';
 
 interface StatusOption {
   label: string;
@@ -42,7 +42,7 @@ interface PriorityOption {
     TooltipModule,
     DialogModule,
     CardModule,
-    InputTextareaModule,
+    InputTextarea,
     CalendarModule
   ],
   template: `
@@ -217,7 +217,7 @@ interface PriorityOption {
                       icon="pi pi-pencil" 
                       [rounded]="true"
                       [text]="true"
-                      severity="warning"
+                      severity="warn"
                       pTooltip="Edytuj"
                       (onClick)="editReport(report)">
                     </p-button>
@@ -448,11 +448,11 @@ export class ReportsComponent implements OnInit {
 
   loadInitialReports(): void {
     this.reportService.getMyReports(this.currentPage, this.pageSize).subscribe({
-      next: (result) => {
+      next: (result: any) => {
         this.reports.set(result.items);
         this.totalRecords.set(result.totalCount);
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading reports:', error);
       }
     });
@@ -483,11 +483,11 @@ export class ReportsComponent implements OnInit {
     };
 
     this.reportService.searchReports(searchRequest).subscribe({
-      next: (result) => {
+      next: (result: any) => {
         this.reports.set(result.items);
         this.totalRecords.set(result.totalCount);
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error searching reports:', error);
       }
     });
@@ -523,7 +523,7 @@ export class ReportsComponent implements OnInit {
         next: () => {
           this.loadInitialReports();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error deleting report:', error);
         }
       });
@@ -536,7 +536,7 @@ export class ReportsComponent implements OnInit {
         next: () => {
           this.loadInitialReports();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error submitting report:', error);
         }
       });
@@ -560,7 +560,7 @@ export class ReportsComponent implements OnInit {
           this.closeCreateDialog();
           this.loadInitialReports();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error updating report:', error);
         }
       });
@@ -570,7 +570,7 @@ export class ReportsComponent implements OnInit {
           this.closeCreateDialog();
           this.loadInitialReports();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error creating report:', error);
         }
       });
@@ -606,11 +606,11 @@ export class ReportsComponent implements OnInit {
     return this.reportService.getPriorityText(priority);
   }
 
-  getStatusSeverity(status: string): string {
-    const severityMap: { [key: string]: string } = {
+  getStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'secondary' | 'contrast' | 'danger' {
+    const severityMap: { [key: string]: 'success' | 'info' | 'warn' | 'secondary' | 'contrast' | 'danger' } = {
       'Draft': 'secondary',
       'Submitted': 'info',
-      'UnderReview': 'warning',
+      'UnderReview': 'warn',
       'Approved': 'success',
       'Rejected': 'danger',
       'Archived': 'contrast'
@@ -618,11 +618,11 @@ export class ReportsComponent implements OnInit {
     return severityMap[status] || 'secondary';
   }
 
-  getPrioritySeverity(priority: string): string {
-    const severityMap: { [key: string]: string } = {
+  getPrioritySeverity(priority: string): 'success' | 'info' | 'warn' | 'secondary' | 'contrast' | 'danger' {
+    const severityMap: { [key: string]: 'success' | 'info' | 'warn' | 'secondary' | 'contrast' | 'danger' } = {
       'Low': 'secondary',
       'Normal': 'info',
-      'High': 'warning',
+      'High': 'warn',
       'Critical': 'danger'
     };
     return severityMap[priority] || 'info';
