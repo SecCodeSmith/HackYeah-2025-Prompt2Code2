@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # MSSQL Database Service
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: uknf-database
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${DB_SA_PASSWORD:-YourStrong@Password123}
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - uknf-network
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "$${SA_PASSWORD}" -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  # .NET Backend API Service
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: uknf-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Server=database;Database=${DB_NAME:-UknfCommunicationDb};User Id=sa;Password=${DB_SA_PASSWORD:-YourStrong@Password123};TrustServerCertificate=True;
+      - JwtSettings__Secret=${JWT_SECRET:-YourSuperSecretKeyForJWTTokenGeneration1234567890}
+      - JwtSettings__Issuer=${JWT_ISSUER:-UknfCommunicationPlatform}
+      - JwtSettings__Audience=${JWT_AUDIENCE:-UknfCommunicationPlatformUsers}
+      - JwtSettings__ExpirationInMinutes=${JWT_EXPIRATION:-60}
+      - OAuth__ClientId=${OAUTH_CLIENT_ID}
+      - OAuth__ClientSecret=${OAUTH_CLIENT_SECRET}
+      - OAuth__Authority=${OAUTH_AUTHORITY}
+    ports:
+      - "5000:5000"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - uknf-network
+    healthcheck:
+      test: curl --fail http://localhost:5000/health || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Angular Frontend Service
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: uknf-frontend
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - API_BASE_URL=${API_BASE_URL:-http://backend:5000}
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - uknf-network
+    healthcheck:
+      test: curl --fail http://localhost:80 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  uknf-network:
+    driver: bridge
+
+volumes:
+  mssql-data:
+    driver: local
