@@ -32,7 +32,7 @@ interface RecentActivity {
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  private router = inject(Router);
+  router = inject(Router);
   authService = inject(AuthService);
   
   currentUser = this.authService.currentUser;
