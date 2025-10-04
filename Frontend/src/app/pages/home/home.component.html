@@ -1,0 +1,30 @@
+<div class="home">
+  <h2>Welcome to HackYeah 2025!</h2>
+  
+  <div class="card">
+    <h3>Backend Connection Status</h3>
+    <p *ngIf="loading" class="loading">Connecting to backend...</p>
+    <p *ngIf="!loading && message" [class.success]="message.includes('Connected')" [class.error]="message.includes('Unable')">
+      {{ message }}
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Getting Started</h3>
+    <ul>
+      <li>Backend: .NET 9 Web API running on port 5000</li>
+      <li>Frontend: Angular 18 with standalone components</li>
+      <li>Features: Routing, HTTP client, CORS configured</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Next Steps</h3>
+    <ol>
+      <li>Install Node.js if not already installed</li>
+      <li>Run <code>npm install</code> in the Frontend directory</li>
+      <li>Start the backend: <code>dotnet run</code> in Backend directory</li>
+      <li>Start the frontend: <code>npm start</code> in Frontend directory</li>
+    </ol>
+  </div>
+</div>
