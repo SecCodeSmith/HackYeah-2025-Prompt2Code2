@@ -797,13 +797,16 @@ export class AuthComponent {
       return;
     }
 
+    console.log('🟢 Login form submitted');
     this.isSubmitting.set(true);
     this.showSuccessMessage.set(false);
 
     const { email, password } = this.loginForm.value;
+    console.log('🟢 Attempting login for:', email);
     
     this.authService.login(email, password).subscribe({
       next: (response) => {
+        console.log('🟢 Login response received in component:', response);
         // Success message shown briefly before navigation
         this.showSuccessMessage.set(true);
         this.messageService.add({
@@ -814,9 +817,10 @@ export class AuthComponent {
         });
         
         // Navigation is handled automatically by AuthService.handleAuthSuccess()
-        console.log('Login successful, redirecting...');
+        console.log('🟢 Login successful, navigation should happen now...');
       },
       error: (error) => {
+        console.error('🔴 Login error in component:', error);
         this.isSubmitting.set(false);
         this.messageService.add({
           severity: 'error',
@@ -827,6 +831,7 @@ export class AuthComponent {
         console.error('Login error:', error);
       },
       complete: () => {
+        console.log('🟢 Login observable completed');
         this.isSubmitting.set(false);
       }
     });

@@ -291,6 +291,8 @@ export class AuthService {
    * Handle successful authentication
    */
   private handleAuthSuccess(response: AuthResponse): void {
+    console.log('🔵 handleAuthSuccess called', response);
+    
     localStorage.setItem(this.TOKEN_KEY, response.accessToken);
     localStorage.setItem(this.REFRESH_TOKEN_KEY, response.refreshToken);
     this.saveUserToStorage(response.user);
@@ -300,11 +302,20 @@ export class AuthService {
     this.isAuthenticated.set(true);
     this.errorMessage.set(null);
 
-    console.log('Authentication successful for:', response.user.email);
+    console.log('✅ Authentication successful for:', response.user.email);
+    console.log('✅ isAuthenticated:', this.isAuthenticated());
     
     // Navigate to the dashboard or return URL after successful authentication
     const returnUrl = this.getReturnUrl();
-    this.router.navigate([returnUrl]);
+    console.log('🔵 Navigating to:', returnUrl);
+    
+    // Use setTimeout to ensure Angular has updated the state before navigation
+    setTimeout(() => {
+      this.router.navigate([returnUrl]).then(
+        (success) => console.log('✅ Navigation successful:', success),
+        (error) => console.error('❌ Navigation failed:', error)
+      );
+    }, 100);
   }
 
   /**
