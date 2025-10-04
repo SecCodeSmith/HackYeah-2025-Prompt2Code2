@@ -50,3 +50,15 @@ code {
   font-family: 'Courier New', monospace;
   font-size: 0.9em;
 }
+
+.feature-link {
+  color: #1976d2;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.feature-link:hover {
+  color: #1565c0;
+  text-decoration: underline;
+}
