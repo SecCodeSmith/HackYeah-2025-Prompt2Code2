@@ -166,6 +166,48 @@ export class AuthService {
   }
 
   /**
+   * Get current user synchronously from signal
+   */
+  getCurrentUserSync(): UserDto | null {
+    return this.currentUser();
+  }
+
+  /**
+   * Check if user has specific role
+   */
+  hasRole(role: string): boolean {
+    const user = this.currentUser();
+    return user ? user.role === role : false;
+  }
+
+  /**
+   * Check if user has any of the specified roles
+   */
+  hasAnyRole(roles: string[]): boolean {
+    const user = this.currentUser();
+    return user ? roles.includes(user.role) : false;
+  }
+
+  /**
+   * Get user's full name
+   */
+  getUserFullName(): string {
+    const user = this.currentUser();
+    return user ? `${user.firstName} ${user.lastName}` : '';
+  }
+
+  /**
+   * Get user's initials
+   */
+  getUserInitials(): string {
+    const user = this.currentUser();
+    if (user && user.firstName && user.lastName) {
+      return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
+    }
+    return 'U';
+  }
+
+  /**
    * Change password
    */
   changePassword(currentPassword: string, newPassword: string, confirmNewPassword: string): Observable<any> {

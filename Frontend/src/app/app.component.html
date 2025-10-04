@@ -1,16 +1,20 @@
-<div class="container">
-  <header>
-    <h1>{{ title }}</h1>
-    <nav>
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
-    </nav>
-  </header>
-  
-  <main>
-    <router-outlet></router-outlet>
-  </main>
-  
-  <footer>
-    <p>&copy; 2025 HackYeah. All rights reserved.</p>
-  </footer>
+<!-- Global Toast Notifications -->
+<p-toast position="top-right" [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+
+<!-- Global Loading Spinner -->
+<div *ngIf="loadingService.isLoading()" class="global-loading-overlay" role="status" aria-live="polite" aria-label="Ładowanie...">
+  <div class="loading-content">
+    <p-progressSpinner 
+      styleClass="w-16 h-16" 
+      strokeWidth="4" 
+      fill="transparent"
+      animationDuration="1s"
+      ariaLabel="Ładowanie aplikacji">
+    </p-progressSpinner>
+    <p class="loading-text">Proszę czekać...</p>
+  </div>
+</div>
+
+<div class="app-container">
+  <router-outlet></router-outlet>
 </div>
