@@ -3,6 +3,7 @@ using Backend.Application.DTOs.Reports;
 using Backend.Application.Features.Reports.Queries;
 using Backend.Domain.Interfaces;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Backend.Application.Features.Reports.Handlers;
 

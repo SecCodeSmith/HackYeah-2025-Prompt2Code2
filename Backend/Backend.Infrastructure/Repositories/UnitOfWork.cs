@@ -12,17 +12,20 @@ public class UnitOfWork : IUnitOfWork
     public IUserRepository Users { get; }
     public IReportRepository Reports { get; }
     public IAttachmentRepository Attachments { get; }
+    public IAnnouncementRepository Announcements { get; }
 
     public UnitOfWork(
         ApplicationDbContext context,
         IUserRepository userRepository,
         IReportRepository reportRepository,
-        IAttachmentRepository attachmentRepository)
+        IAttachmentRepository attachmentRepository,
+        IAnnouncementRepository announcementRepository)
     {
         _context = context;
         Users = userRepository;
         Reports = reportRepository;
         Attachments = attachmentRepository;
+        Announcements = announcementRepository;
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

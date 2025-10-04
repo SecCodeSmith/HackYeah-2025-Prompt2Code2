@@ -96,3 +96,13 @@ public record UpdateReportResponse(
     bool Success,
     string Message
 );
+
+public record SubmitReportResponse(
+    bool Success,
+    string Message
+);
+
+public record ReviewReportResponse(
+    bool Success,
+    string Message
+);

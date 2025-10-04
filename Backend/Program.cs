@@ -28,6 +28,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<Backend.Domain.Interfaces.IUserRepository, Backend.Infrastructure.Repositories.UserRepository>();
 builder.Services.AddScoped<Backend.Domain.Interfaces.IReportRepository, Backend.Infrastructure.Repositories.ReportRepository>();
 builder.Services.AddScoped<Backend.Domain.Interfaces.IAttachmentRepository, Backend.Infrastructure.Repositories.AttachmentRepository>();
+builder.Services.AddScoped<Backend.Domain.Interfaces.IAnnouncementRepository, Backend.Infrastructure.Repositories.AnnouncementRepository>();
 builder.Services.AddScoped<Backend.Domain.Interfaces.IUnitOfWork, Backend.Infrastructure.Repositories.UnitOfWork>();
 
 // Add Services
@@ -41,9 +42,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularApp",
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200")
+            policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .AllowAnyMethod()
+                  .AllowCredentials();
         });
 });
 

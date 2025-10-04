@@ -29,11 +29,11 @@ public record DeleteReportCommand(
 public record SubmitReportCommand(
     Guid ReportId,
     Guid UserId
-) : IRequest<bool>;
+) : IRequest<SubmitReportResponse>;
 
 public record ReviewReportCommand(
     Guid ReportId,
     int Status,
     string? ReviewNotes,
     Guid ReviewerId
-) : IRequest<bool>;
+) : IRequest<ReviewReportResponse>;

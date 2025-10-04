@@ -3,6 +3,7 @@ using Backend.Application.DTOs.Auth;
 using Backend.Application.Features.Auth.Queries;
 using Backend.Domain.Interfaces;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Backend.Application.Features.Auth.Handlers;
 

@@ -2,6 +2,7 @@
 using Backend.Application.Features.Auth.Commands;
 using Backend.Domain.Interfaces;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Backend.Application.Features.Auth.Handlers;
 

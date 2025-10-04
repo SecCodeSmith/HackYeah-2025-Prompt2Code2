@@ -4,6 +4,7 @@ using Backend.Application.Features.Reports.Commands;
 using Backend.Domain.Entities;
 using Backend.Domain.Interfaces;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Backend.Application.Features.Reports.Handlers;
 

@@ -22,7 +22,8 @@ export const authGuard: CanActivateFn = (route, state) => {
 
 /**
  * Route guard that protects admin-only routes
- * Redirects to home if user is not an admin
+ * Redirects to home if user is not an admin or supervisor
+ * Allowed roles: Admin, Administrator, Supervisor
  */
 export const adminGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
@@ -34,7 +35,9 @@ export const adminGuard: CanActivateFn = (route, state) => {
   }
 
   const user = authService.currentUser();
-  if (user && user.role === 'Admin') {
+  const allowedRoles = ['Admin', 'Administrator', 'Supervisor'];
+  
+  if (user && allowedRoles.includes(user.role)) {
     return true;
   } else {
     router.navigate(['/']);
