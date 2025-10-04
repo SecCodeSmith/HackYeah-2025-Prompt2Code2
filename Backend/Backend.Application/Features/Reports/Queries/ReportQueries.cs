@@ -37,3 +37,12 @@ public record SearchReportsQuery(
     int PageNumber = 1,
     int PageSize = 10
 ) : IRequest<PagedResult<ReportDto>>;
+
+public record ExportReportsQuery(
+    string? SearchTerm,
+    int? Status,
+    int? Priority,
+    string? Category,
+    DateTime? CreatedFrom,
+    DateTime? CreatedTo
+) : IRequest<byte[]>;

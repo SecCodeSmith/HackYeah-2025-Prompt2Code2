@@ -670,7 +670,24 @@ export class ReportsComponent implements OnInit {
   }
 
   exportExcel(): void {
-    this.reportService.exportToExcel(this.reports());
+    // Prepare filter request matching current search criteria
+    const filters: SearchReportsRequest = {
+      searchTerm: this.searchTerm || undefined,
+      status: this.selectedStatus ?? undefined,
+      priority: this.selectedPriority ?? undefined
+    };
+
+    // Call server-side export and download the file
+    this.reportService.exportToExcel(filters).subscribe({
+      next: (blob: Blob) => {
+        const filename = `Raporty-UKNF-${new Date().toISOString().split('T')[0]}.xlsx`;
+        this.reportService.downloadBlob(blob, filename);
+        console.log('✅ Excel file downloaded successfully');
+      },
+      error: (error: any) => {
+        console.error('❌ Error exporting to Excel:', error);
+      }
+    });
   }
 
   // Helper methods

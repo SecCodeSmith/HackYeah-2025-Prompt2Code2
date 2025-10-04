@@ -399,6 +399,55 @@ public class ReportsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Export reports to Excel file with optional filters
+    /// </summary>
+    [HttpGet("export/excel")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ExportToExcel(
+        [FromQuery] string? searchTerm,
+        [FromQuery] int? status,
+        [FromQuery] int? priority,
+        [FromQuery] string? category,
+        [FromQuery] DateTime? createdFrom,
+        [FromQuery] DateTime? createdTo)
+    {
+        try
+        {
+            _logger.LogInformation("Excel export requested with filters - SearchTerm: {SearchTerm}, Status: {Status}, Priority: {Priority}", 
+                searchTerm, status, priority);
+
+            var query = new ExportReportsQuery(
+                searchTerm,
+                status,
+                priority,
+                category,
+                createdFrom,
+                createdTo
+            );
+
+            var fileBytes = await _mediator.Send(query);
+
+            // Generate filename with current date
+            var fileName = $"Raporty-UKNF-{DateTime.Now:yyyy-MM-dd}.xlsx";
+
+            _logger.LogInformation("Excel file generated successfully: {FileName}, Size: {Size} bytes", 
+                fileName, fileBytes.Length);
+
+            return File(
+                fileBytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                fileName
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error exporting reports to Excel");
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
     private Guid GetCurrentUserId()
     {
         var userIdClaim = User.FindFirst("userId")?.Value;

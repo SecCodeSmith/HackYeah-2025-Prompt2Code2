@@ -226,11 +226,54 @@ export class ReportService {
   }
 
   /**
-   * Export reports to Excel (simplified CSV format)
+   * Export reports to Excel (server-side) with filters
    */
-  exportToExcel(reports: ReportDto[]): void {
-    const csvContent = this.convertToCSV(reports);
-    this.downloadFile(csvContent, 'reports.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  exportToExcel(filters: SearchReportsRequest = {}): Observable<Blob> {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    let params = new HttpParams();
+    
+    if (filters.searchTerm) {
+      params = params.set('searchTerm', filters.searchTerm);
+    }
+    if (filters.status !== undefined && filters.status !== null) {
+      params = params.set('status', filters.status.toString());
+    }
+    if (filters.priority !== undefined && filters.priority !== null) {
+      params = params.set('priority', filters.priority.toString());
+    }
+    if (filters.category) {
+      params = params.set('category', filters.category);
+    }
+    if (filters.createdFrom) {
+      params = params.set('createdFrom', filters.createdFrom);
+    }
+    if (filters.createdTo) {
+      params = params.set('createdTo', filters.createdTo);
+    }
+
+    return this.http.get(`${this.API_URL}/export/excel`, { 
+      params, 
+      responseType: 'blob' 
+    }).pipe(
+      tap(() => this.isLoading.set(false)),
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  /**
+   * Download blob as file
+   */
+  downloadBlob(blob: Blob, filename: string): void {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
   }
 
   /**
