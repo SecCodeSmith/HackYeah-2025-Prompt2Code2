@@ -15,6 +15,54 @@
   </div>
 </div>
 
-<div class="app-container">
+<!-- Navigation Header (only shown when authenticated) -->
+<nav *ngIf="isAuthenticated()" class="app-navbar">
+  <div class="navbar-container">
+    <!-- Logo/Brand -->
+    <div class="navbar-brand">
+      <i class="pi pi-shield text-2xl text-primary-500"></i>
+      <span class="brand-text">UKNF Platform</span>
+    </div>
+    
+    <!-- Navigation Links -->
+    <div class="navbar-links">
+      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+        <i class="pi pi-home"></i>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/reports" routerLinkActive="active-link" class="nav-link">
+        <i class="pi pi-file-edit"></i>
+        <span>Zgłoszenia</span>
+      </a>
+      <a *ngIf="currentUser()?.role === 'Admin' || currentUser()?.role === 'Administrator'" 
+         routerLink="/admin" 
+         routerLinkActive="active-link" 
+         class="nav-link">
+        <i class="pi pi-users"></i>
+        <span>Administracja</span>
+      </a>
+    </div>
+    
+    <!-- User Menu -->
+    <div class="navbar-user">
+      <div class="user-info">
+        <span class="user-name">{{ userFullName() }}</span>
+        <span class="user-role">{{ currentUser()?.role }}</span>
+      </div>
+      <p-avatar 
+        [label]="userInitials()" 
+        shape="circle" 
+        size="large"
+        styleClass="user-avatar"
+        [style]="{'background-color': '#6366f1', 'color': '#ffffff', 'cursor': 'pointer'}"
+        (click)="userMenu.toggle($event)">
+      </p-avatar>
+      <p-menu #userMenu [model]="userMenuItems" [popup]="true" appendTo="body"></p-menu>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Application Container -->
+<div class="app-container" [class.with-navbar]="isAuthenticated()">
   <router-outlet></router-outlet>
 </div>

@@ -301,6 +301,20 @@ export class AuthService {
     this.errorMessage.set(null);
 
     console.log('Authentication successful for:', response.user.email);
+    
+    // Navigate to the dashboard or return URL after successful authentication
+    const returnUrl = this.getReturnUrl();
+    this.router.navigate([returnUrl]);
+  }
+
+  /**
+   * Get the return URL from query params or default to home
+   */
+  private getReturnUrl(): string {
+    // Check if there's a stored return URL from the auth guard
+    const urlParams = new URLSearchParams(window.location.search);
+    const returnUrl = urlParams.get('returnUrl');
+    return returnUrl || '/';
   }
 
   /**

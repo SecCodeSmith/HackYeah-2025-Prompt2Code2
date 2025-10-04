@@ -1,30 +1,150 @@
-<div class="home">
-  <h2>Welcome to HackYeah 2025!</h2>
-  
-  <div class="card">
-    <h3>Backend Connection Status</h3>
-    <p *ngIf="loading" class="loading">Connecting to backend...</p>
-    <p *ngIf="!loading && message" [class.success]="message.includes('Connected')" [class.error]="message.includes('Unable')">
-      {{ message }}
-    </p>
+<div class="dashboard-container">
+  <!-- Welcome Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">
+        {{ getGreeting() }}, {{ currentUser()?.firstName || 'Użytkowniku' }}!
+      </h1>
+      <p class="dashboard-subtitle">
+        Witaj w systemie komunikacji UKNF. Oto przegląd Twoich działań.
+      </p>
+    </div>
   </div>
 
-  <div class="card">
-    <h3>Getting Started</h3>
-    <ul>
-      <li>Backend: .NET 9 Web API running on port 5000</li>
-      <li>Frontend: Angular 18 with standalone components</li>
-      <li>Features: Routing, HTTP client, CORS configured</li>
-    </ul>
+  <!-- Dashboard Statistics Tiles -->
+  <div class="dashboard-tiles">
+    <div 
+      *ngFor="let tile of dashboardTiles()" 
+      class="dashboard-tile"
+      [style.border-left-color]="tile.color"
+      (click)="navigateToTile(tile)"
+      role="button"
+      tabindex="0"
+      [attr.aria-label]="tile.title + ': ' + tile.value"
+    >
+      <div class="tile-icon" [style.background-color]="tile.color + '20'">
+        <i [class]="tile.icon" [style.color]="tile.color"></i>
+      </div>
+      <div class="tile-content">
+        <h3 class="tile-value">{{ tile.value }}</h3>
+        <p class="tile-title">{{ tile.title }}</p>
+        <p class="tile-description">{{ tile.description }}</p>
+      </div>
+    </div>
   </div>
 
-  <div class="card">
-    <h3>Next Steps</h3>
-    <ol>
-      <li>Install Node.js if not already installed</li>
-      <li>Run <code>npm install</code> in the Frontend directory</li>
-      <li>Start the backend: <code>dotnet run</code> in Backend directory</li>
-      <li>Start the frontend: <code>npm start</code> in Frontend directory</li>
-    </ol>
+  <!-- Main Content Grid -->
+  <div class="dashboard-grid">
+    <!-- Reports Chart Card -->
+    <div class="dashboard-card chart-card">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="pi pi-chart-line mr-2"></i>
+              Statystyki zgłoszeń
+            </h2>
+            <p-button 
+              label="Zobacz szczegóły" 
+              icon="pi pi-external-link" 
+              [text]="true"
+              size="small"
+              (click)="router.navigate(['/reports'])"
+            ></p-button>
+          </div>
+        </ng-template>
+        <div class="chart-container">
+          <p-chart 
+            type="line" 
+            [data]="reportChartData" 
+            [options]="reportChartOptions"
+            [style]="{'height': '300px'}"
+          ></p-chart>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Recent Activity Card -->
+    <div class="dashboard-card activity-card">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="pi pi-history mr-2"></i>
+              Ostatnia aktywność
+            </h2>
+            <p-button 
+              label="Zobacz wszystkie" 
+              icon="pi pi-external-link" 
+              [text]="true"
+              size="small"
+            ></p-button>
+          </div>
+        </ng-template>
+        <div class="activity-list">
+          <div 
+            *ngFor="let activity of recentActivities()" 
+            class="activity-item"
+            [class.activity-report]="activity.type === 'report'"
+            [class.activity-announcement]="activity.type === 'announcement'"
+            [class.activity-update]="activity.type === 'update'"
+          >
+            <div class="activity-icon">
+              <i [class]="activity.icon"></i>
+            </div>
+            <div class="activity-content">
+              <h4 class="activity-title">{{ activity.title }}</h4>
+              <p class="activity-description">{{ activity.description }}</p>
+              <span class="activity-time">{{ formatTime(activity.timestamp) }}</span>
+            </div>
+          </div>
+          
+          <div *ngIf="recentActivities().length === 0" class="no-activities">
+            <i class="pi pi-inbox text-4xl text-gray-400 mb-3"></i>
+            <p class="text-gray-600">Brak ostatniej aktywności</p>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="dashboard-actions">
+    <p-card>
+      <ng-template pTemplate="header">
+        <div class="card-header">
+          <h2 class="card-title">
+            <i class="pi pi-bolt mr-2"></i>
+            Szybkie akcje
+          </h2>
+        </div>
+      </ng-template>
+      <div class="action-buttons">
+        <p-button 
+          label="Nowe zgłoszenie" 
+          icon="pi pi-plus" 
+          severity="primary"
+          size="large"
+          (click)="router.navigate(['/reports'])"
+        ></p-button>
+        <p-button 
+          label="Przejrzyj zgłoszenia" 
+          icon="pi pi-list" 
+          severity="secondary"
+          size="large"
+          [outlined]="true"
+          (click)="router.navigate(['/reports'])"
+        ></p-button>
+        <p-button 
+          *ngIf="currentUser()?.role === 'Admin' || currentUser()?.role === 'Administrator'"
+          label="Panel administracyjny" 
+          icon="pi pi-cog" 
+          severity="help"
+          size="large"
+          [outlined]="true"
+          (click)="router.navigate(['/admin'])"
+        ></p-button>
+      </div>
+    </p-card>
   </div>
 </div>
