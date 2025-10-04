@@ -86,7 +86,7 @@ builder.Services.AddAuthorization();
 
 // Register MediatR
 builder.Services.AddMediatR(cfg => 
-    cfg.RegisterServicesFromAssembly(typeof(Backend.Application.DTOs.Auth.AuthDTOs).Assembly));
+    cfg.RegisterServicesFromAssembly(typeof(Backend.Application.Features.Auth.Commands.LoginCommand).Assembly));
 
 // Register Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

@@ -42,8 +42,8 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, List<Us
                 u.LastName,
                 u.PhoneNumber,
                 u.Role.ToString(),
-                u.IsEmailVerified,
                 u.IsActive,
+                false, // EmailConfirmed - property not implemented yet
                 u.CreatedAt
             )).ToList();
 

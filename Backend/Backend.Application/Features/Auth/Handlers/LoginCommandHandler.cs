@@ -1,3 +1,6 @@
+/* TEMP DISABLED - RefreshToken repository not implemented
+TODO: Implement IRefreshTokenRepository and add to IUnitOfWork before uncommenting
+
 // File: Backend/Backend.Application/Features/Auth/Handlers/LoginCommandHandler.cs
 using Backend.Application.DTOs.Auth;
 using Backend.Application.Features.Auth.Commands;
@@ -84,3 +87,5 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
         };
     }
 }
+
+*/

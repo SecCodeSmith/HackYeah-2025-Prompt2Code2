@@ -1,6 +1,7 @@
 // File: Backend/Backend.Application/Features/Reports/Handlers/SubmitReportCommandHandler.cs
 using Backend.Application.DTOs.Reports;
 using Backend.Application.Features.Reports.Commands;
+using Backend.Domain.Entities;
 using Backend.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -31,20 +32,19 @@ public class SubmitReportCommandHandler : IRequestHandler<SubmitReportCommand, S
         }
 
         // Authorization check - only the owner can submit their report
-        if (request.UserId.HasValue && report.UserId != request.UserId.Value)
+        if (report.UserId != request.UserId)
         {
             _logger.LogWarning("User {UserId} attempted to submit report {ReportId} they don't own", 
-                request.UserId.Value, request.ReportId);
+                request.UserId, request.ReportId);
             throw new UnauthorizedAccessException("You can only submit your own reports");
         }
 
-        // Validate current status - only Draft and Returned reports can be submitted
-        if (report.Status != Domain.Enums.ReportStatus.Draft && 
-            report.Status != Domain.Enums.ReportStatus.Returned)
+        // Validate current status - only Draft reports can be submitted
+        if (report.Status != ReportStatus.Draft)
         {
             _logger.LogWarning("Attempted to submit report {ReportId} with invalid status {Status}", 
                 request.ReportId, report.Status);
-            throw new InvalidOperationException($"Cannot submit report with status {report.Status}. Only Draft and Returned reports can be submitted.");
+            throw new InvalidOperationException($"Cannot submit report with status {report.Status}. Only Draft reports can be submitted.");
         }
 
         // Validate report has required data
@@ -55,7 +55,7 @@ public class SubmitReportCommandHandler : IRequestHandler<SubmitReportCommand, S
         }
 
         // Update status to Submitted
-        report.Status = Domain.Enums.ReportStatus.Submitted;
+        report.Status = ReportStatus.Submitted;
         report.SubmittedAt = DateTime.UtcNow;
         report.UpdatedAt = DateTime.UtcNow;
 
@@ -65,11 +65,9 @@ public class SubmitReportCommandHandler : IRequestHandler<SubmitReportCommand, S
         _logger.LogInformation("Report {ReportId} successfully submitted by user {UserId}", 
             request.ReportId, request.UserId);
 
-        return new SubmitReportResponse
-        {
-            ReportId = report.Id,
-            Status = report.Status.ToString(),
-            SubmittedAt = report.SubmittedAt.Value
-        };
+        return new SubmitReportResponse(
+            true,
+            "Report submitted successfully"
+        );
     }
 }

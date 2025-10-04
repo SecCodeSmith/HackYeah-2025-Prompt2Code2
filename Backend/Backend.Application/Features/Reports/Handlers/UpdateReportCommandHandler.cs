@@ -1,6 +1,7 @@
 // File: Backend/Backend.Application/Features/Reports/Handlers/UpdateReportCommandHandler.cs
 using Backend.Application.DTOs.Reports;
 using Backend.Application.Features.Reports.Commands;
+using Backend.Domain.Entities;
 using Backend.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -23,53 +24,45 @@ public class UpdateReportCommandHandler : IRequestHandler<UpdateReportCommand, U
     public async Task<UpdateReportResponse> Handle(UpdateReportCommand request, CancellationToken cancellationToken)
     {
         // Find the report
-        var report = await _unitOfWork.Reports.GetByIdAsync(request.Id, cancellationToken);
+        var report = await _unitOfWork.Reports.GetByIdAsync(request.ReportId, cancellationToken);
         if (report == null)
         {
-            _logger.LogWarning("Report with ID {ReportId} not found", request.Id);
-            throw new KeyNotFoundException($"Report with ID {request.Id} not found");
+            _logger.LogWarning("Report with ID {ReportId} not found", request.ReportId);
+            throw new KeyNotFoundException($"Report with ID {request.ReportId} not found");
         }
 
         // Authorization check - only the owner can edit their report
-        // (In a real app, you would pass the current user's ID from the request/context)
-        if (request.UserId.HasValue && report.UserId != request.UserId.Value)
+        if (report.UserId != request.UserId)
         {
             _logger.LogWarning("User {UserId} attempted to update report {ReportId} they don't own", 
-                request.UserId.Value, request.Id);
+                request.UserId, request.ReportId);
             throw new UnauthorizedAccessException("You can only update your own reports");
         }
 
-        // Only Draft and Returned reports can be updated
-        if (report.Status != Domain.Enums.ReportStatus.Draft && 
-            report.Status != Domain.Enums.ReportStatus.Returned)
+        // Only Draft reports can be updated
+        if (report.Status != ReportStatus.Draft)
         {
             _logger.LogWarning("Attempted to update report {ReportId} with status {Status}", 
-                request.Id, report.Status);
-            throw new InvalidOperationException($"Cannot update report with status {report.Status}. Only Draft and Returned reports can be edited.");
+                request.ReportId, report.Status);
+            throw new InvalidOperationException($"Cannot update report with status {report.Status}. Only Draft reports can be edited.");
         }
 
         // Update fields
-        report.Title = request.Title ?? report.Title;
-        report.Description = request.Description ?? report.Description;
-        report.Category = request.Category ?? report.Category;
-
-        if (Enum.TryParse<Domain.Enums.ReportPriority>(request.Priority, true, out var priority))
-        {
-            report.Priority = priority;
-        }
-
+        report.Title = request.Title;
+        report.Description = request.Description;
+        report.Category = request.Category;
+        report.Priority = (ReportPriority)request.Priority;
         report.UpdatedAt = DateTime.UtcNow;
 
         // Save changes
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Report {ReportId} successfully updated by user {UserId}", 
-            request.Id, request.UserId);
+            request.ReportId, request.UserId);
 
-        return new UpdateReportResponse
-        {
-            Id = report.Id,
-            UpdatedAt = report.UpdatedAt.Value
-        };
+        return new UpdateReportResponse(
+            true,
+            "Report updated successfully"
+        );
     }
 }

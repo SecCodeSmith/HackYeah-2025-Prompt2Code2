@@ -29,7 +29,7 @@ public class CreateReportCommandHandler : IRequestHandler<CreateReportCommand, C
             Title = request.Title,
             Description = request.Description,
             Category = request.Category,
-            Priority = request.Priority,
+            Priority = (ReportPriority)request.Priority,
             UserId = request.UserId,
             Status = ReportStatus.Draft
         };
@@ -41,12 +41,9 @@ public class CreateReportCommandHandler : IRequestHandler<CreateReportCommand, C
         _logger.LogInformation("Report created: {ReportId} by user: {UserId}", report.Id, request.UserId);
 
         // Return response
-        return new CreateReportResponse
-        {
-            Id = report.Id,
-            Title = report.Title,
-            Status = report.Status.ToString(),
-            CreatedAt = report.CreatedAt
-        };
+        return new CreateReportResponse(
+            report.Id,
+            "Report created successfully"
+        );
     }
 }

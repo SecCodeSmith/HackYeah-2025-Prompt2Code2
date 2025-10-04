@@ -39,7 +39,7 @@ public class DeleteAnnouncementCommandHandler : IRequestHandler<DeleteAnnounceme
                 return false;
             }
 
-            await _unitOfWork.Announcements.DeleteAsync(request.Id, cancellationToken);
+            await _unitOfWork.Announcements.DeleteAsync(announcement, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Announcement deleted: {AnnouncementId} by {DeletedBy}", request.Id, request.DeletedBy);

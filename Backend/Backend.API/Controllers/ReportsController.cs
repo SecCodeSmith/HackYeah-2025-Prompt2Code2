@@ -247,10 +247,10 @@ public class ReportsController : ControllerBase
             var command = new SubmitReportCommand(id, userId);
             var result = await _mediator.Send(command);
             
-            if (!result)
+            if (!result.Success)
                 return NotFound(new { message = "Report not found" });
             
-            return Ok(new { message = "Report submitted successfully" });
+            return Ok(new { message = result.Message });
         }
         catch (Exception ex)
         {
@@ -280,10 +280,10 @@ public class ReportsController : ControllerBase
             
             var result = await _mediator.Send(command);
             
-            if (!result)
+            if (!result.Success)
                 return NotFound(new { message = "Report not found" });
             
-            return Ok(new { message = "Report reviewed successfully" });
+            return Ok(new { message = result.Message });
         }
         catch (Exception ex)
         {

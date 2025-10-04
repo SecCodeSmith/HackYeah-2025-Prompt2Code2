@@ -39,7 +39,7 @@ public class DeleteAttachmentCommandHandler : IRequestHandler<DeleteAttachmentCo
             await _fileStorageService.DeleteFileAsync(attachment.FilePath, cancellationToken);
 
             // Delete from database
-            await _unitOfWork.Attachments.DeleteAsync(attachment.Id, cancellationToken);
+            await _unitOfWork.Attachments.DeleteAsync(attachment, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Attachment deleted successfully: {AttachmentId}", request.AttachmentId);

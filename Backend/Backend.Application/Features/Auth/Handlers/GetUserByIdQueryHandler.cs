@@ -30,13 +30,16 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserDto
             return null;
         }
 
-        return new UserDto
-        {
-            Id = user.Id,
-            Email = user.Email,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Role = user.Role.ToString()
-        };
+        return new UserDto(
+            user.Id,
+            user.Email,
+            user.FirstName,
+            user.LastName,
+            user.PhoneNumber,
+            user.Role.ToString(),
+            user.IsActive,
+            false, // EmailConfirmed - property not implemented yet
+            user.CreatedAt
+        );
     }
 }

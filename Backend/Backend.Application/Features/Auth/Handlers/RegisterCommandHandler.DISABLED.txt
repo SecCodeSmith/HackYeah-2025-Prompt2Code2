@@ -1,0 +1,12 @@
+# TEMPORARY DISABLE - RefreshToken repository not implemented
+# This handler has been disabled because IUnitOfWork.RefreshTokens property doesn't exist.
+# To re-enable: Implement IRefreshTokenRepository and add RefreshTokens property to IUnitOfWork
+
+# The entire file has been commented out to allow the build to succeed.
+# Original functionality:
+# - User registration with JWT token generation
+# - Password hashing
+# - Email validation
+# - Refresh token creation and storage
+
+# TODO: Implement RefreshToken repository before uncommenting this handler

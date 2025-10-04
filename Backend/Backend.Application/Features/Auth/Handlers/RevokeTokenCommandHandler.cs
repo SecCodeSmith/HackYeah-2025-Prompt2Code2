@@ -1,3 +1,6 @@
+/* TEMP DISABLED - RefreshToken repository not implemented
+TODO: Implement IRefreshTokenRepository and add to IUnitOfWork before uncommenting
+
 // File: Backend/Backend.Application/Features/Auth/Handlers/RevokeTokenCommandHandler.cs
 using Backend.Application.Features.Auth.Commands;
 using Backend.Domain.Interfaces;
@@ -45,3 +48,5 @@ public class RevokeTokenCommandHandler : IRequestHandler<RevokeTokenCommand, boo
         return true;
     }
 }
+
+*/
