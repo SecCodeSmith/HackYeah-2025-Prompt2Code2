@@ -8,7 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { DropdownModule } from 'primeng/dropdown';
+import { Select } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
@@ -43,7 +43,7 @@ interface PriorityOption {
     DialogModule,
     InputTextModule,
     InputTextareaModule,
-    DropdownModule,
+    Select,
     ToastModule,
     TagModule,
     ConfirmDialogModule,
@@ -151,7 +151,7 @@ interface PriorityOption {
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Content *</label>
           <textarea 
-            pInputTextarea 
+            pTextarea 
             [(ngModel)]="formData.content" 
             rows="6"
             placeholder="Enter announcement content"
@@ -161,7 +161,7 @@ interface PriorityOption {
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Priority *</label>
-          <p-dropdown 
+          <p-select 
             [(ngModel)]="formData.priority" 
             [options]="priorityOptions"
             optionLabel="label"
@@ -180,7 +180,7 @@ interface PriorityOption {
                 <span>{{ option.label }}</span>
               </div>
             </ng-template>
-          </p-dropdown>
+          </p-select>
         </div>
 
         <div *ngIf="isEditMode">

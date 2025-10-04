@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { Select } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
@@ -40,7 +40,7 @@ interface RoleOption {
     TableModule,
     ButtonModule,
     DialogModule,
-    DropdownModule,
+    Select,
     ToastModule,
     TagModule,
     InputTextModule,
@@ -193,7 +193,7 @@ interface RoleOption {
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">New Role *</label>
-          <p-dropdown 
+          <p-select 
             [(ngModel)]="newRole" 
             [options]="roleOptions"
             optionLabel="label"
@@ -201,7 +201,7 @@ interface RoleOption {
             placeholder="Select a role"
             [style]="{ width: '100%' }"
             [showClear]="false">
-          </p-dropdown>
+          </p-select>
         </div>
 
         <div class="bg-yellow-50 border border-yellow-200 rounded p-3 text-sm text-yellow-800" *ngIf="newRole === 0">

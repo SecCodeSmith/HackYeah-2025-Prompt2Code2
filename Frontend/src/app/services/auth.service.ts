@@ -276,12 +276,14 @@ export class AuthService {
   private checkAuthStatus(): void {
     if (this.hasValidToken()) {
       this.isAuthenticated.set(true);
-      // Optionally fetch fresh user data
-      this.getCurrentUser().subscribe({
-        error: () => {
-          this.clearAuthData();
-        }
-      });
+      // Defer user data fetch to avoid circular dependency during initialization
+      setTimeout(() => {
+        this.getCurrentUser().subscribe({
+          error: () => {
+            this.clearAuthData();
+          }
+        });
+      }, 0);
     } else {
       this.clearAuthData();
     }

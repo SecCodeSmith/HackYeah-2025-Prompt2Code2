@@ -26,7 +26,12 @@ export const authInterceptor: HttpInterceptorFn = (
   }
 
   // Get the auth token from AuthService
-  const token = authService.getToken();
+  let token: string | null = null;
+  try {
+    token = authService?.getToken?.() ?? null;
+  } catch (error) {
+    console.error('Error getting token from AuthService:', error);
+  }
 
   // Clone the request and add authorization header if token exists
   let authReq = req;

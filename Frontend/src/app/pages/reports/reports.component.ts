@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { DropdownModule } from 'primeng/dropdown';
+import { Select } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
@@ -37,7 +37,7 @@ interface PriorityOption {
     TableModule,
     ButtonModule,
     InputTextModule,
-    DropdownModule,
+    Select,
     TagModule,
     TooltipModule,
     DialogModule,
@@ -84,7 +84,7 @@ interface PriorityOption {
 
             <!-- Status Filter -->
             <div>
-              <p-dropdown 
+              <p-select 
                 [(ngModel)]="selectedStatus"
                 [options]="statusOptions"
                 placeholder="Wszystkie statusy"
@@ -92,12 +92,12 @@ interface PriorityOption {
                 optionLabel="label"
                 optionValue="value"
                 class="w-full">
-              </p-dropdown>
+              </p-select>
             </div>
 
             <!-- Priority Filter -->
             <div>
-              <p-dropdown 
+              <p-select 
                 [(ngModel)]="selectedPriority"
                 [options]="priorityOptions"
                 placeholder="Wszystkie priorytety"
@@ -105,7 +105,7 @@ interface PriorityOption {
                 optionLabel="label"
                 optionValue="value"
                 class="w-full">
-              </p-dropdown>
+              </p-select>
             </div>
           </div>
 
@@ -348,7 +348,7 @@ interface PriorityOption {
               </label>
               <textarea 
                 id="description"
-                pInputTextarea 
+                pTextarea 
                 [(ngModel)]="reportForm.description"
                 rows="5"
                 class="w-full"
@@ -377,14 +377,14 @@ interface PriorityOption {
                 <label for="priority" class="block text-sm font-semibold text-gray-700 mb-2">
                   Priorytet <span class="text-red-500">*</span>
                 </label>
-                <p-dropdown 
+                <p-select 
                   [(ngModel)]="reportForm.priority"
                   [options]="priorityOptions"
                   optionLabel="label"
                   optionValue="value"
                   class="w-full"
                   placeholder="Wybierz priorytet">
-                </p-dropdown>
+                </p-select>
               </div>
             </div>
           </div>
@@ -442,14 +442,14 @@ interface PriorityOption {
         border-top: 1px solid #e5e7eb;
       }
 
-      /* Dropdown Full Width */
-      .p-dropdown {
+      /* Select Full Width */
+      .p-select {
         width: 100%;
       }
 
       /* Input and Textarea Styling */
       .p-inputtext,
-      .p-inputtextarea {
+      .p-textarea {
         width: 100%;
         font-size: 0.875rem;
       }
