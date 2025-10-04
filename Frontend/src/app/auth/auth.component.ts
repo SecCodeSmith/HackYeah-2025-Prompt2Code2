@@ -508,12 +508,14 @@ import { AuthService } from '../services/auth.service';
       /* Float Label Styling */
       .p-float-label {
         display: block;
+        overflow: visible !important;
       }
 
       .p-float-label label {
         color: #6b7280;
         font-weight: 500;
         transition: all 0.2s ease;
+        overflow: visible !important;
       }
 
       .p-float-label input:focus ~ label,
@@ -652,11 +654,13 @@ import { AuthService } from '../services/auth.service';
         min-height: 80px;
         display: flex;
         flex-direction: column;
+        overflow: visible !important;
       }
 
       .form-field-wrapper .p-float-label {
         flex: 0 0 auto;
         margin-bottom: 0.25rem;
+        overflow: visible !important;
       }
 
       .help-message-container {
@@ -675,12 +679,24 @@ import { AuthService } from '../services/auth.service';
         line-height: 1.4;
       }
 
-      /* Ensure Float Label doesn't overlap */
+      /* Ensure Float Label doesn't overlap and is fully visible */
+      .p-float-label {
+        position: relative;
+        overflow: visible !important;
+      }
+
       .p-float-label > label {
+        position: absolute;
         left: 1rem;
         top: 50%;
         margin-top: -0.5rem;
         pointer-events: none;
+        transition: all 0.2s ease;
+        background: transparent;
+        white-space: nowrap;
+        max-width: calc(100% - 2rem);
+        overflow: visible;
+        text-overflow: clip;
       }
 
       .p-float-label > input:focus ~ label,
@@ -691,8 +707,10 @@ import { AuthService } from '../services/auth.service';
         top: -0.75rem;
         font-size: 12px;
         background: white;
-        padding: 0 0.25rem;
+        padding: 0 0.4rem;
         left: 0.75rem;
+        max-width: none;
+        white-space: nowrap;
       }
 
       /* Password Panel Positioning */

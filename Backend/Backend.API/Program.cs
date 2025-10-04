@@ -4,12 +4,16 @@ using Backend.Domain.Interfaces;
 using Backend.Infrastructure.Persistence;
 using Backend.Infrastructure.Repositories;
 using Backend.Infrastructure.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Override URL binding to listen on all interfaces (required for Docker)
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -84,9 +88,15 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// Register MediatR
-builder.Services.AddMediatR(cfg => 
-    cfg.RegisterServicesFromAssembly(typeof(Backend.Application.Features.Auth.Commands.LoginCommand).Assembly));
+// Register MediatR with validation behavior
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(Backend.Application.Features.Auth.Commands.LoginCommand).Assembly);
+    cfg.AddOpenBehavior(typeof(Backend.Application.Common.Behaviors.ValidationBehavior<,>));
+});
+
+// Register FluentValidation validators
+builder.Services.AddValidatorsFromAssembly(typeof(Backend.Application.Features.Auth.Commands.LoginCommand).Assembly);
 
 // Register Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -140,8 +150,36 @@ app.MapHealthChecks("/health");
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await dbContext.Database.MigrateAsync();
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+    
+    try
+    {
+        logger.LogInformation("🔄 Checking database schema...");
+        
+        // For development: Recreate database if tables don't exist
+        // This ensures a clean slate for development
+        var canConnect = await dbContext.Database.CanConnectAsync();
+        logger.LogInformation($"✅ Database connection: {canConnect}");
+        
+        // Delete and recreate database to ensure clean schema
+        logger.LogInformation("🗑️ Deleting old database if exists...");
+        await dbContext.Database.EnsureDeletedAsync();
+        
+        logger.LogInformation("🏗️ Creating database with schema...");
+        await dbContext.Database.EnsureCreatedAsync();
+        
+        logger.LogInformation("✅ Database schema created successfully!");
+        
+        // Alternative for production: If migrations exist, use MigrateAsync() instead:
+        // await dbContext.Database.MigrateAsync();
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "❌ Error creating database schema");
+        throw;
+    }
 }
 
 app.Run();

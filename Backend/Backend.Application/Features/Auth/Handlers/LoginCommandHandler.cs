@@ -1,11 +1,7 @@
-/* TEMP DISABLED - RefreshToken repository not implemented
-TODO: Implement IRefreshTokenRepository and add to IUnitOfWork before uncommenting
-
 // File: Backend/Backend.Application/Features/Auth/Handlers/LoginCommandHandler.cs
 using Backend.Application.DTOs.Auth;
 using Backend.Application.Features.Auth.Commands;
 using Backend.Application.Interfaces;
-using Backend.Domain.Entities;
 using Backend.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -56,36 +52,28 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
         _logger.LogInformation("Successful login for user: {Email}", user.Email);
 
         // Generate JWT tokens
-        var accessToken = await _jwtService.GenerateAccessToken(user);
+        var accessToken = _jwtService.GenerateAccessToken(user);
         var refreshToken = _jwtService.GenerateRefreshToken();
 
-        // Store refresh token in database
-        var refreshTokenEntity = new RefreshToken
-        {
-            Token = refreshToken,
-            UserId = user.Id,
-            ExpiryDate = DateTime.UtcNow.AddDays(7),
-            IsRevoked = false
-        };
-
-        await _unitOfWork.RefreshTokens.AddAsync(refreshTokenEntity, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        // TODO: Store refresh token when RefreshTokenRepository is implemented
+        // For now, we just generate and return it (stateless tokens)
 
         // Return authentication response
-        return new AuthResponse
-        {
-            AccessToken = accessToken,
-            RefreshToken = refreshToken,
-            User = new UserDto
-            {
-                Id = user.Id,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Role = user.Role.ToString()
-            }
-        };
+        return new AuthResponse(
+            AccessToken: accessToken,
+            RefreshToken: refreshToken,
+            ExpiresAt: DateTime.UtcNow.AddHours(1),
+            User: new UserDto(
+                Id: user.Id,
+                Email: user.Email,
+                FirstName: user.FirstName,
+                LastName: user.LastName,
+                PhoneNumber: user.PhoneNumber,
+                Role: user.Role.ToString(),
+                IsActive: user.IsActive,
+                EmailConfirmed: user.EmailConfirmed,
+                CreatedAt: user.CreatedAt
+            )
+        );
     }
 }
-
-*/
