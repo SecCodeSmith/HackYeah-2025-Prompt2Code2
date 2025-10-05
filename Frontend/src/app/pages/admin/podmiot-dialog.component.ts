@@ -40,19 +40,19 @@ export class PodmiotDialogComponent implements OnChanges {
   @Input() podmiotId: string | null = null;
   @Output() onClose = new EventEmitter<boolean>();
 
-  form!: FormGroup;
+  podmiotForm!: FormGroup;
   loading = false;
   saving = false;
   isEditMode = false;
 
-  typyPodmiotow = Object.keys(TypPodmiotu)
+  typPodmiotuOptions = Object.keys(TypPodmiotu)
     .filter(key => !isNaN(Number(key)))
     .map(key => ({
       label: TypPodmiotuLabels[Number(key)],
       value: Number(key)
     }));
 
-  statusy = Object.keys(StatusPodmiotu)
+  statusOptions = Object.keys(StatusPodmiotu)
     .filter(key => !isNaN(Number(key)))
     .map(key => ({
       label: StatusPodmiotuLabels[Number(key)],
@@ -80,7 +80,7 @@ export class PodmiotDialogComponent implements OnChanges {
   }
 
   private initForm(): void {
-    this.form = this.fb.group({
+    this.podmiotForm = this.fb.group({
       kodUKNF: ['', [Validators.required, Validators.maxLength(50)]],
       nazwa: ['', [Validators.required, Validators.maxLength(500)]],
       typPodmiotu: [null, Validators.required],
@@ -104,7 +104,7 @@ export class PodmiotDialogComponent implements OnChanges {
     
     this.podmiotyService.getPodmiotById(id).subscribe({
       next: (podmiot) => {
-        this.form.patchValue({
+        this.podmiotForm.patchValue({
           kodUKNF: podmiot.kodUKNF,
           nazwa: podmiot.nazwa,
           typPodmiotu: parseInt(podmiot.typPodmiotu, 10),
@@ -137,7 +137,7 @@ export class PodmiotDialogComponent implements OnChanges {
   }
 
   private resetForm(): void {
-    this.form.reset({
+    this.podmiotForm.reset({
       kodUKNF: '',
       nazwa: '',
       typPodmiotu: null,
@@ -157,8 +157,8 @@ export class PodmiotDialogComponent implements OnChanges {
   }
 
   save(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+    if (this.podmiotForm.invalid) {
+      this.podmiotForm.markAllAsTouched();
       this.messageService.add({
         severity: 'warn',
         summary: 'Uwaga',
@@ -168,7 +168,7 @@ export class PodmiotDialogComponent implements OnChanges {
     }
 
     this.saving = true;
-    const formValue = this.form.value;
+    const formValue = this.podmiotForm.value;
 
     const request: CreatePodmiotRequest | UpdatePodmiotRequest = {
       kodUKNF: formValue.kodUKNF,
@@ -209,17 +209,21 @@ export class PodmiotDialogComponent implements OnChanges {
     });
   }
 
+  onCancel(): void {
+    this.close(false);
+  }
+
   close(saved: boolean): void {
     this.onClose.emit(saved);
   }
 
   isFieldInvalid(fieldName: string): boolean {
-    const field = this.form.get(fieldName);
+    const field = this.podmiotForm.get(fieldName);
     return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
   getFieldError(fieldName: string): string {
-    const field = this.form.get(fieldName);
+    const field = this.podmiotForm.get(fieldName);
     if (!field || !field.errors) return '';
 
     if (field.errors['required']) return 'To pole jest wymagane';

@@ -33,7 +33,8 @@
 
 **Email:** `admin@uknf.gov.pl`  
 **Password:** `Admin123!`  
-**Role:** Administrator (Supervisor)  
+**Role:** Administrator (Supervisor - Role 2)  
+**Status:** ✅ Password Fixed (BCrypt workFactor 12)  
 **Permissions:**
 - Full access to all features
 - User management
@@ -47,7 +48,8 @@
 
 **Email:** `user@example.com`  
 **Password:** `User123!`  
-**Role:** User (Normal)  
+**Role:** User (Normal - Role 0)  
+**Status:** ✅ Password Fixed (BCrypt workFactor 12)  
 **Permissions:**
 - View and create reports
 - View announcements

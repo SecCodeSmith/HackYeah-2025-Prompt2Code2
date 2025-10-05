@@ -12,6 +12,7 @@ import { CardModule } from 'primeng/card';
 import { MessagingService } from '../../services/messaging.service';
 import { MessageListDto, MessageStatus, PaginatedMessageResult } from '../../models/messaging.models';
 import { MessageService } from 'primeng/api';
+import { ComposeMessageComponent } from './compose-message.component';
 
 @Component({
   selector: 'app-inbox',
@@ -25,9 +26,15 @@ import { MessageService } from 'primeng/api';
     DropdownModule,
     TagModule,
     TooltipModule,
-    CardModule
+    CardModule,
+    ComposeMessageComponent
   ],
   template: `
+    <app-compose-message 
+      [(visible)]="showComposeDialog"
+      (messageSent)="onMessageSent()">
+    </app-compose-message>
+
     <div class="p-4">
       <p-card>
         <ng-template pTemplate="header">
@@ -243,25 +250,31 @@ export class InboxComponent implements OnInit {
     });
   }
 
+  showComposeDialog = false;
+
   composeMessage() {
-    this.router.navigate(['/messaging/compose']);
+    this.showComposeDialog = true;
   }
 
-  getPrioritySeverity(priority: string): string {
+  onMessageSent() {
+    this.loadInbox(); // Refresh inbox after sending
+  }
+
+  getPrioritySeverity(priority: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | undefined {
     switch(priority) {
       case 'Urgent': return 'danger';
-      case 'High': return 'warning';
+      case 'High': return 'warn';
       case 'Normal': return 'info';
       case 'Low': return 'success';
       default: return 'info';
     }
   }
 
-  getStatusSeverity(status: string): string {
+  getStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | undefined {
     switch(status) {
       case 'Unread': return 'info';
       case 'Read': return 'success';
-      case 'Replied': return 'warning';
+      case 'Replied': return 'warn';
       case 'Archived': return 'secondary';
       default: return 'info';
     }

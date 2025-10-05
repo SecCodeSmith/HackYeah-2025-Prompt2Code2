@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CardModule } from 'primeng/card';
+import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { EditorModule } from 'primeng/editor';
 import { DropdownModule } from 'primeng/dropdown';
+import { ToastModule } from 'primeng/toast';
 import { MessagingService } from '../../services/messaging.service';
-import { SendMessageRequest, MessageDto, MessagePriority } from '../../models/messaging.models';
+import { SendMessageRequest, MessageDto } from '../../models/messaging.models';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -17,132 +17,137 @@ import { MessageService } from 'primeng/api';
   imports: [
     CommonModule,
     FormsModule,
-    CardModule,
+    DialogModule,
     ButtonModule,
     InputTextModule,
     EditorModule,
-    DropdownModule
+    DropdownModule,
+    ToastModule
   ],
+  providers: [MessageService],
   template: `
-    <div class="p-4">
-      <p-card>
-        <ng-template pTemplate="header">
-          <div class="flex justify-content-between align-items-center p-3">
-            <h2 class="m-0">
-              <i class="pi pi-envelope mr-2"></i>Compose Message
-            </h2>
-            <p-button 
-              icon="pi pi-arrow-left" 
-              label="Back" 
-              (onClick)="goBack()"
-              [text]="true">
-            </p-button>
-          </div>
-        </ng-template>
+    <p-toast></p-toast>
+    <p-dialog 
+      [(visible)]="visible"
+      [modal]="true"
+      [style]="{width: '70vw'}"
+      [draggable]="false"
+      [resizable]="false"
+      (onHide)="onDialogHide()">
+      
+      <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2">
+          <i class="pi pi-envelope"></i>
+          <span class="font-semibold text-xl">Compose Message</span>
+        </div>
+      </ng-template>
 
-        <form (ngSubmit)="sendMessage()" #messageForm="ngForm">
-          <div class="grid">
-            <div class="col-12">
-              <div class="field">
-                <label for="recipientUserId">Recipient User ID *</label>
-                <input 
-                  type="text" 
-                  pInputText 
-                  id="recipientUserId"
-                  [(ngModel)]="request.recipientUserId"
-                  name="recipientUserId"
-                  placeholder="Enter recipient user ID"
-                  required
-                  class="w-full">
-                <small class="text-500">Note: In production, this would be a user selector dropdown</small>
-              </div>
-            </div>
-
-            <div class="col-12 md:col-6">
-              <div class="field">
-                <label for="podmiotId">Podmiot ID (Optional)</label>
-                <input 
-                  type="text" 
-                  pInputText 
-                  id="podmiotId"
-                  [(ngModel)]="request.podmiotId"
-                  name="podmiotId"
-                  placeholder="Enter podmiot ID (optional)"
-                  class="w-full">
-                <small class="text-500">Link message to a specific entity</small>
-              </div>
-            </div>
-
-            <div class="col-12 md:col-6">
-              <div class="field">
-                <label for="priority">Priority *</label>
-                <p-dropdown 
-                  id="priority"
-                  [(ngModel)]="request.priority" 
-                  [options]="priorityOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  name="priority"
-                  placeholder="Select Priority"
-                  required
-                  styleClass="w-full">
-                </p-dropdown>
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="field">
-                <label for="subject">Subject *</label>
-                <input 
-                  type="text" 
-                  pInputText 
-                  id="subject"
-                  [(ngModel)]="request.subject"
-                  name="subject"
-                  placeholder="Enter message subject"
-                  required
-                  class="w-full">
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="field">
-                <label for="content">Message *</label>
-                <p-editor 
-                  [(ngModel)]="request.content" 
-                  name="content"
-                  [style]="{'height':'300px'}"
-                  required>
-                </p-editor>
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="flex gap-2">
-                <p-button 
-                  type="submit"
-                  label="Send Message" 
-                  icon="pi pi-send" 
-                  [loading]="sending"
-                  [disabled]="!isFormValid()">
-                </p-button>
-                <p-button 
-                  type="button"
-                  label="Cancel" 
-                  icon="pi pi-times" 
-                  (onClick)="goBack()"
-                  severity="secondary"
-                  [outlined]="true">
-                </p-button>
-              </div>
+      <form (ngSubmit)="sendMessage()" #messageForm="ngForm">
+        <div class="grid">
+          <div class="col-12">
+            <div class="field">
+              <label for="recipientUserId">Recipient User ID *</label>
+              <input 
+                type="text" 
+                pInputText 
+                id="recipientUserId"
+                [(ngModel)]="request.recipientUserId"
+                name="recipientUserId"
+                placeholder="Enter recipient user ID"
+                required
+                class="w-full">
+              <small class="text-500">Note: In production, this would be a user selector dropdown</small>
             </div>
           </div>
-        </form>
-      </p-card>
-    </div>
+
+          <div class="col-12 md:col-6">
+            <div class="field">
+              <label for="podmiotId">Podmiot ID (Optional)</label>
+              <input 
+                type="text" 
+                pInputText 
+                id="podmiotId"
+                [(ngModel)]="request.podmiotId"
+                name="podmiotId"
+                placeholder="Enter podmiot ID (optional)"
+                class="w-full">
+              <small class="text-500">Link message to a specific entity</small>
+            </div>
+          </div>
+
+          <div class="col-12 md:col-6">
+            <div class="field">
+              <label for="priority">Priority *</label>
+              <p-dropdown 
+                id="priority"
+                [(ngModel)]="request.priority" 
+                [options]="priorityOptions"
+                optionLabel="label"
+                optionValue="value"
+                name="priority"
+                placeholder="Select Priority"
+                required
+                styleClass="w-full">
+              </p-dropdown>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="field">
+              <label for="subject">Subject *</label>
+              <input 
+                type="text" 
+                pInputText 
+                id="subject"
+                [(ngModel)]="request.subject"
+                name="subject"
+                placeholder="Enter message subject"
+                required
+                class="w-full">
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="field">
+              <label for="content">Message *</label>
+              <p-editor 
+                [(ngModel)]="request.content" 
+                name="content"
+                [style]="{'height':'250px'}"
+                required>
+              </p-editor>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <ng-template pTemplate="footer">
+        <div class="flex gap-2 justify-content-end">
+          <p-button 
+            label="Cancel" 
+            icon="pi pi-times" 
+            (onClick)="onCancel()"
+            severity="secondary"
+            [outlined]="true">
+          </p-button>
+          <p-button 
+            label="Send Message" 
+            icon="pi pi-send" 
+            (onClick)="sendMessage()"
+            [loading]="sending"
+            [disabled]="!isFormValid()">
+          </p-button>
+        </div>
+      </ng-template>
+    </p-dialog>
   `
 })
 export class ComposeMessageComponent implements OnInit {
+  @Input() visible: boolean = false;
+  @Input() replyToMessage?: MessageDto;
+  @Output() visibleChange = new EventEmitter<boolean>();
+  @Output() messageSent = new EventEmitter<void>();
+
   request: SendMessageRequest = {
     subject: '',
     content: '',
@@ -162,32 +167,19 @@ export class ComposeMessageComponent implements OnInit {
 
   constructor(
     private messagingService: MessagingService,
-    private router: Router,
-    private route: ActivatedRoute,
     private messageService: MessageService
   ) {}
 
   ngOnInit() {
-    // Check if replying to a message
-    this.route.queryParams.subscribe(params => {
-      const replyToId = params['replyTo'];
-      if (replyToId) {
-        // Load original message to populate fields
-        this.messagingService.getMessageById(replyToId).subscribe({
-          next: (message: MessageDto) => {
-            this.request.subject = message.subject.startsWith('Re:') 
-              ? message.subject 
-              : `Re: ${message.subject}`;
-            this.request.recipientUserId = message.senderUserId;
-            this.request.podmiotId = message.podmiotId;
-            this.request.priority = message.priority;
-          },
-          error: (error) => {
-            console.error('Error loading original message:', error);
-          }
-        });
-      }
-    });
+    // Pre-fill form if replying to a message
+    if (this.replyToMessage) {
+      this.request.subject = this.replyToMessage.subject.startsWith('Re:') 
+        ? this.replyToMessage.subject 
+        : `Re: ${this.replyToMessage.subject}`;
+      this.request.recipientUserId = this.replyToMessage.senderUserId;
+      this.request.podmiotId = this.replyToMessage.podmiotId;
+      this.request.priority = this.replyToMessage.priority;
+    }
   }
 
   isFormValid(): boolean {
@@ -225,7 +217,10 @@ export class ComposeMessageComponent implements OnInit {
           detail: 'Message sent successfully'
         });
         this.sending = false;
-        this.router.navigate(['/messaging/sent']);
+        this.resetForm();
+        this.visible = false;
+        this.visibleChange.emit(false);
+        this.messageSent.emit();
       },
       error: (error) => {
         console.error('Error sending message:', error);
@@ -239,7 +234,24 @@ export class ComposeMessageComponent implements OnInit {
     });
   }
 
-  goBack() {
-    this.router.navigate(['/messaging/inbox']);
+  onCancel() {
+    this.visible = false;
+    this.visibleChange.emit(false);
+    this.resetForm();
+  }
+
+  onDialogHide() {
+    this.visibleChange.emit(false);
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.request = {
+      subject: '',
+      content: '',
+      priority: 'Normal',
+      recipientUserId: '',
+      podmiotId: null
+    };
   }
 }

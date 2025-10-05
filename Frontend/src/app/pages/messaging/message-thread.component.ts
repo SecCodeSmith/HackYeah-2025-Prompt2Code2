@@ -274,10 +274,10 @@ export class MessageThreadComponent implements OnInit {
     this.router.navigate(['/messaging/inbox']);
   }
 
-  getPrioritySeverity(priority: string): string {
+  getPrioritySeverity(priority: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | undefined {
     switch(priority) {
       case 'Urgent': return 'danger';
-      case 'High': return 'warning';
+      case 'High': return 'warn';
       case 'Normal': return 'info';
       case 'Low': return 'success';
       default: return 'info';

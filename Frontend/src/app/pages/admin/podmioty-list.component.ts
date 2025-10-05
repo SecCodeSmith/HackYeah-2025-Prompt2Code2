@@ -216,13 +216,13 @@ export class PodmiotyListComponent implements OnInit {
     return StatusPodmiotuLabels[numValue] || value;
   }
 
-  getStatusSeverity(value: string): 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' {
+  getStatusSeverity(value: string): 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast' {
     const numValue = parseInt(value, 10);
     const color = StatusPodmiotuColors[numValue];
     
     switch (color) {
       case 'success': return 'success';
-      case 'warning': return 'warning';
+      case 'warning': return 'warn';
       case 'danger': return 'danger';
       case 'info': return 'info';
       default: return 'secondary';

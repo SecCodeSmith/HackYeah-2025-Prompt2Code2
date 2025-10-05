@@ -59,35 +59,110 @@ textarea:focus::placeholder,
 
 /* Dialog header - solid background with subtle border */
 .p-dialog .p-dialog-header {
-  @apply bg-white border-b border-gray-200;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e5e7eb !important;
   padding: 1.25rem 1.5rem;
 }
 
 /* Dialog content - solid white background */
 .p-dialog .p-dialog-content {
-  @apply bg-white;
+  background-color: #ffffff !important;
   padding: 1.5rem;
 }
 
 /* Dialog footer - solid background matching header */
 .p-dialog .p-dialog-footer {
-  @apply bg-white border-t border-gray-200;
+  background-color: #ffffff !important;
+  border-top: 1px solid #e5e7eb !important;
   padding: 1rem 1.5rem;
 }
 
 /* Dialog mask (backdrop) - semi-transparent dark overlay */
 .p-dialog-mask {
-  @apply bg-black bg-opacity-50;
+  background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Ensure dialog itself has white background and proper shadow */
 .p-dialog {
-  @apply bg-white shadow-2xl rounded-lg;
+  background-color: #ffffff !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  border-radius: 0.5rem;
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 /* Optional: Add smooth backdrop blur effect for modern look */
 .p-dialog-mask.p-component-overlay {
   backdrop-filter: blur(2px);
+}
+
+/* ========================================
+   BUTTON STYLES
+   ======================================== */
+/* Primary button - blue */
+.p-button.p-button-primary,
+.p-button-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.p-button.p-button-primary:hover,
+.p-button-primary:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+/* Success button - green */
+.p-button.p-button-success,
+.p-button-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.p-button.p-button-success:hover,
+.p-button-success:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+/* Danger button - red */
+.p-button.p-button-danger,
+.p-button-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.p-button.p-button-danger:hover,
+.p-button-danger:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+/* Secondary button - gray */
+.p-button.p-button-secondary,
+.p-button-secondary {
+  background-color: #6b7280 !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.p-button.p-button-secondary:hover,
+.p-button-secondary:hover {
+  background-color: #4b5563 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
 }
 

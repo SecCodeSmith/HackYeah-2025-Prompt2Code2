@@ -176,21 +176,21 @@ export class SentMessagesComponent implements OnInit {
     this.router.navigate(['/messaging/thread', message.id]);
   }
 
-  getPrioritySeverity(priority: string): string {
+  getPrioritySeverity(priority: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | undefined {
     switch(priority) {
       case 'Urgent': return 'danger';
-      case 'High': return 'warning';
+      case 'High': return 'warn';
       case 'Normal': return 'info';
       case 'Low': return 'success';
       default: return 'info';
     }
   }
 
-  getStatusSeverity(status: string): string {
+  getStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | undefined {
     switch(status) {
       case 'Unread': return 'info';
       case 'Read': return 'success';
-      case 'Replied': return 'warning';
+      case 'Replied': return 'warn';
       case 'Archived': return 'secondary';
       default: return 'info';
     }
