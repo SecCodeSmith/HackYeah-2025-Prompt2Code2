@@ -36,7 +36,13 @@ public class GetAttachmentQueryHandler : IRequestHandler<GetAttachmentQuery, (St
             }
 
             // Get file from storage
-            var (fileStream, contentType) = await _fileStorageService.GetFileAsync(attachment.FilePath, cancellationToken);
+            var fileStream = await _fileStorageService.GetFileAsync(attachment.FilePath, cancellationToken);
+            
+            if (fileStream == null)
+            {
+                _logger.LogWarning("File not found in storage: {FilePath}", attachment.FilePath);
+                throw new InvalidOperationException($"File not found for attachment {request.AttachmentId}");
+            }
 
             _logger.LogInformation("Attachment retrieved successfully: {AttachmentId}", request.AttachmentId);
 

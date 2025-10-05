@@ -306,7 +306,14 @@ public class ReportsController : ControllerBase
                 return BadRequest(new { message = "No file uploaded" });
 
             var userId = GetCurrentUserId();
-            var command = new Backend.Application.Features.Attachments.Commands.UploadAttachmentCommand(id, file, userId);
+            using var stream = file.OpenReadStream();
+            var command = new Backend.Application.Features.Attachments.Commands.UploadAttachmentCommand(
+                id, 
+                file.FileName, 
+                file.ContentType, 
+                file.Length, 
+                stream, 
+                userId);
             var result = await _mediator.Send(command);
             
             return Ok(result);

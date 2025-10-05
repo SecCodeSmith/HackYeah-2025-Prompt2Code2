@@ -39,32 +39,31 @@ public class UploadAttachmentCommandHandler : IRequestHandler<UploadAttachmentCo
 
             // Validate file size (max 10MB)
             const long maxFileSize = 10 * 1024 * 1024;
-            if (request.File.Length > maxFileSize)
+            if (request.FileSize > maxFileSize)
             {
                 throw new InvalidOperationException($"File size exceeds maximum allowed size of {maxFileSize / (1024 * 1024)}MB");
             }
 
             // Validate file type
             var allowedExtensions = new[] { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".txt", ".jpg", ".jpeg", ".png", ".gif", ".zip" };
-            var fileExtension = Path.GetExtension(request.File.FileName).ToLowerInvariant();
+            var fileExtension = Path.GetExtension(request.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(fileExtension))
             {
                 throw new InvalidOperationException($"File type '{fileExtension}' is not allowed");
             }
 
             // Save file to storage
-            using var fileStream = request.File.OpenReadStream();
-            var filePath = await _fileStorageService.SaveFileAsync(fileStream, request.File.FileName, cancellationToken);
+            var filePath = await _fileStorageService.SaveFileAsync(request.FileStream, request.FileName, cancellationToken);
 
             // Create attachment entity
             var attachment = new ReportAttachment
             {
                 Id = Guid.NewGuid(),
                 ReportId = request.ReportId,
-                FileName = request.File.FileName,
+                FileName = request.FileName,
                 FilePath = filePath,
-                ContentType = request.File.ContentType,
-                FileSize = request.File.Length,
+                ContentType = request.ContentType,
+                FileSize = request.FileSize,
                 CreatedAt = DateTime.UtcNow
             };
 

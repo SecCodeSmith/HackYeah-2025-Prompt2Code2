@@ -86,7 +86,8 @@ public class AttachmentsController : ControllerBase
     {
         try
         {
-            var query = new GetReportAttachmentsQuery(reportId);
+            var userId = GetCurrentUserId();
+            var query = new GetReportAttachmentsQuery(reportId, userId);
             var attachments = await _mediator.Send(query);
             
             return Ok(attachments);
@@ -118,9 +119,7 @@ public class AttachmentsController : ControllerBase
                 return NotFound(new { message = "Attachment not found" });
             }
 
-            var (fileStream, fileName, contentType) = result.Value;
-
-            return File(fileStream, contentType, fileName);
+            return File(result.Value.FileStream, result.Value.ContentType, result.Value.FileName);
         }
         catch (Exception ex)
         {

@@ -9,8 +9,9 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copy project files
+# Copy solution and all project files
 COPY ["Backend.csproj", "./"]
+COPY ["Backend.API/Backend.API.csproj", "Backend.API/"]
 COPY ["Backend.Application/Backend.Application.csproj", "Backend.Application/"]
 COPY ["Backend.Domain/Backend.Domain.csproj", "Backend.Domain/"]
 COPY ["Backend.Infrastructure/Backend.Infrastructure.csproj", "Backend.Infrastructure/"]
