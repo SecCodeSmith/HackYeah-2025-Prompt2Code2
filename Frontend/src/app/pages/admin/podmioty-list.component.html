@@ -1,0 +1,145 @@
+<div class="card">
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+
+  <!-- Toolbar -->
+  <p-toolbar styleClass="mb-4">
+    <ng-template pTemplate="left">
+      <h2 class="m-0">Zarządzanie Podmiotami</h2>
+    </ng-template>
+    <ng-template pTemplate="right">
+      <button 
+        pButton 
+        label="Nowy Podmiot" 
+        icon="pi pi-plus" 
+        class="p-button-success"
+        (click)="openCreateDialog()">
+      </button>
+    </ng-template>
+  </p-toolbar>
+
+  <!-- Filters -->
+  <div class="grid mb-3">
+    <div class="col-12 md:col-4">
+      <span class="p-input-icon-left w-full">
+        <i class="pi pi-search"></i>
+        <input 
+          pInputText 
+          type="text" 
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="onSearch()"
+          placeholder="Szukaj (Kod UKNF, Nazwa, NIP, REGON)" 
+          class="w-full" />
+      </span>
+    </div>
+    <div class="col-12 md:col-3">
+      <p-dropdown 
+        [(ngModel)]="selectedTyp"
+        [options]="typyPodmiotow"
+        placeholder="Typ podmiotu"
+        [showClear]="true"
+        (onChange)="onFilterChange()"
+        styleClass="w-full">
+      </p-dropdown>
+    </div>
+    <div class="col-12 md:col-3">
+      <p-dropdown 
+        [(ngModel)]="selectedStatus"
+        [options]="statusy"
+        placeholder="Status"
+        [showClear]="true"
+        (onChange)="onFilterChange()"
+        styleClass="w-full">
+      </p-dropdown>
+    </div>
+    <div class="col-12 md:col-2">
+      <button 
+        pButton 
+        label="Wyczyść" 
+        icon="pi pi-filter-slash" 
+        class="p-button-outlined w-full"
+        (click)="clearFilters()">
+      </button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <p-table 
+    #dt
+    [value]="podmioty" 
+    [rows]="rows"
+    [totalRecords]="totalRecords"
+    [loading]="loading"
+    [paginator]="true"
+    [lazy]="true"
+    (onLazyLoad)="onPageChange($event)"
+    [first]="first"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Wyświetlanie {first} do {last} z {totalRecords} podmiotów"
+    [responsive]="true"
+    styleClass="p-datatable-gridlines">
+    
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 120px">Kod UKNF</th>
+        <th>Nazwa</th>
+        <th style="width: 180px">Typ</th>
+        <th style="width: 140px">Status</th>
+        <th style="width: 140px">Data rejestracji</th>
+        <th style="width: 180px">Akcje</th>
+      </tr>
+    </ng-template>
+    
+    <ng-template pTemplate="body" let-podmiot>
+      <tr>
+        <td><strong>{{ podmiot.kodUKNF }}</strong></td>
+        <td>{{ podmiot.nazwa }}</td>
+        <td>{{ getTypLabel(podmiot.typPodmiotu) }}</td>
+        <td>
+          <p-tag 
+            [value]="getStatusLabel(podmiot.status)"
+            [severity]="getStatusSeverity(podmiot.status)">
+          </p-tag>
+        </td>
+        <td>{{ formatDate(podmiot.dataRejestracjiUKNF) }}</td>
+        <td>
+          <div class="flex gap-2">
+            <button 
+              pButton 
+              icon="pi pi-pencil" 
+              class="p-button-rounded p-button-text p-button-info"
+              (click)="openEditDialog(podmiot.id)"
+              pTooltip="Edytuj"
+              tooltipPosition="top">
+            </button>
+            <button 
+              pButton 
+              icon="pi pi-trash" 
+              class="p-button-rounded p-button-text p-button-danger"
+              (click)="confirmDelete(podmiot)"
+              pTooltip="Usuń"
+              tooltipPosition="top">
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" class="text-center py-4">
+          <i class="pi pi-inbox text-4xl text-gray-400 mb-3"></i>
+          <p class="text-gray-500">Nie znaleziono podmiotów</p>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Dialog Component -->
+<app-podmiot-dialog
+  [visible]="showDialog"
+  [podmiotId]="selectedPodmiotId"
+  (onClose)="onDialogClose($event)">
+</app-podmiot-dialog>

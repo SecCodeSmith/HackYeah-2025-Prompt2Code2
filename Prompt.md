@@ -1227,3 +1227,78 @@ Trigger Download: On a successful response, use a utility function (or a library
 
 Please provide the complete code for the necessary new and modified C# and TypeScript files.
 
+# Prompt add bouth direction communication
+
+## Prompt to gen prompt
+Text this can work but creating good prompt for it can got e lot of effort. Before first promp all functionality should be analized and deskribed in dockement morover AI can make errors
+
+## Generated prompt 
+
+Of course. Here is a prompt designed to test the Docker build, fix any errors, and then implement the critical communication and entity management features you've requested.
+
+Prompt: Final Build Test & Critical Feature Implementation
+
+Persona: You are the Lead Full-Stack Developer and DevOps Engineer for the UKNF project.
+
+Mission:
+Your mission is to get the project into a stable, buildable state and then implement the absolute most critical features remaining: Entity Management and Two-Way Communication. The application must function as a true communication bridge between UKNF and the supervised entities ("Podmioty").
+
+Execution Plan:
+You will execute this mission in two distinct phases. Do not proceed to Phase 2 until Phase 1 is complete.
+
+Phase 1: Test Build, Diagnose, and Fix
+
+Objective: Ensure the entire application builds successfully using docker-compose.
+
+Instructions:
+
+    Perform a simulated docker-compose up -d --build command on the project in its current state.
+
+    Meticulously analyze the output for any build errors, whether in the .NET backend, the Angular frontend, or the Docker configuration itself.
+
+    If errors are found:
+
+        Provide a clear root cause analysis explaining why the build failed.
+
+        Generate the complete, corrected code for all affected files to resolve the errors.
+
+    If the build is successful, state "Build successful. Proceeding to feature implementation." and move to Phase 2.
+
+Phase 2: Implement Critical Communication & Entity Features
+
+Objective: Build the core functionalities that allow UKNF to manage entities and facilitate two-way communication. All implementations must be based on the DETAILS_UKNF_Prompt2Code2.pdf specification.
+
+Instructions:
+
+1. Entity Management (
+
+Obsługa kartoteki podmiotów) 
+
+    Backend:
+
+        Create the necessary API endpoints for authorized UKNF staff to perform full CRUD (Create, Read, Update, Delete) operations on supervised entities (Podmiot).
+
+        Ensure the entity model in your code matches the structure defined in the specification (ID, Typ podmiotu, Kod UKNF, Nazwa, NIP, KRS, etc.). 
+
+    Frontend:
+
+        Create a new administrative section/view for "Zarządzanie Podmiotami" (Entity Management).
+
+        This view must include a table listing all entities and provide UI (buttons, forms, dialogs) to add a new entity and edit existing ones.
+
+2. Two-Way Communication (Messages & Announcements)
+
+    Announcements from UKNF (Obsługa komunikatów):
+
+    Backend: Implement API endpoints for UKNF staff to create, publish, and manage announcements. The system must support targeting all entities or specific groups. 
+
+Frontend: Create the "Tablica ogłoszeń" (Announcements Board) component on the user's dashboard. Implement the logic for users to view and provide "read confirmation" for high-priority announcements. 
+
+Direct Messaging (Obsługa wiadomości):
+
+        Backend: Implement API endpoints that allow for two-way message threads between UKNF employees and users representing an entity. Ensure these messages support attachments.
+
+        Frontend: Create a user-friendly messaging interface. It should allow users to view conversations, compose replies, and send new messages to UKNF.
+
+Final Output:
+Provide all new and modified code in complete files, clearly labeled with their full file paths. Begin with Phase 1.

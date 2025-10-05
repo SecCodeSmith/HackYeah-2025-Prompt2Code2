@@ -46,7 +46,7 @@ public class CreateAnnouncementCommandHandler : IRequestHandler<CreateAnnounceme
                 Content = request.Content,
                 Priority = (AnnouncementPriority)request.Priority,
                 IsActive = true,
-                CreatedBy = request.CreatedBy,
+                CreatedBy = request.CreatedBy.ToString(),
                 CreatedAt = DateTime.UtcNow
             };
 

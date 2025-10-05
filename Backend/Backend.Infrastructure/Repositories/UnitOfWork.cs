@@ -13,19 +13,22 @@ public class UnitOfWork : IUnitOfWork
     public IReportRepository Reports { get; }
     public IAttachmentRepository Attachments { get; }
     public IAnnouncementRepository Announcements { get; }
+    public IPodmiotRepository Podmioty { get; }
 
     public UnitOfWork(
         ApplicationDbContext context,
         IUserRepository userRepository,
         IReportRepository reportRepository,
         IAttachmentRepository attachmentRepository,
-        IAnnouncementRepository announcementRepository)
+        IAnnouncementRepository announcementRepository,
+        IPodmiotRepository podmiotRepository)
     {
         _context = context;
         Users = userRepository;
         Reports = reportRepository;
         Attachments = attachmentRepository;
         Announcements = announcementRepository;
+        Podmioty = podmiotRepository;
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
