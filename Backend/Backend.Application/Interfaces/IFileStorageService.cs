@@ -4,14 +4,14 @@ namespace Backend.Application.Interfaces;
 public interface IFileStorageService
 {
     /// <summary>
-    /// Saves a file to storage and returns the file path
+    /// Saves a file to storage and returns the relative path
     /// </summary>
-    Task<string> SaveFileAsync(Stream fileStream, string fileName, CancellationToken cancellationToken = default);
+    Task<string> SaveFileAsync(Stream fileStream, string relativePath, CancellationToken cancellationToken = default);
     
     /// <summary>
-    /// Retrieves a file from storage
+    /// Retrieves a file stream from storage
     /// </summary>
-    Task<(Stream FileStream, string ContentType)> GetFileAsync(string filePath, CancellationToken cancellationToken = default);
+    Task<Stream?> GetFileAsync(string relativePath, CancellationToken cancellationToken = default);
     
     /// <summary>
     /// Deletes a file from storage

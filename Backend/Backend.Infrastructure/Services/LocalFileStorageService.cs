@@ -23,54 +23,58 @@ public class LocalFileStorageService : IFileStorageService
         }
     }
 
-    public async Task<string> SaveFileAsync(Stream fileStream, string fileName, CancellationToken cancellationToken = default)
+    public async Task<string> SaveFileAsync(Stream fileStream, string relativePath, CancellationToken cancellationToken = default)
     {
         try
         {
-            // Generate a unique file name to prevent collisions
-            var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(fileName)}";
-            var filePath = Path.Combine(_storageDirectory, uniqueFileName);
+            // Build full path (relativePath may include subdirectories like "reports/guid/filename.pdf")
+            var fullPath = Path.Combine(_storageDirectory, relativePath);
+            
+            // Ensure directory exists
+            var directory = Path.GetDirectoryName(fullPath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+                _logger.LogInformation("Created subdirectory: {Directory}", directory);
+            }
 
             // Save the file to disk
-            using (var fileStreamOutput = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+            using (var fileStreamOutput = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
             {
                 await fileStream.CopyToAsync(fileStreamOutput, cancellationToken);
             }
 
-            _logger.LogInformation("Saved file: {FileName} to {FilePath}", fileName, filePath);
-            return uniqueFileName; // Return relative path (just the filename)
+            _logger.LogInformation("Saved file to {FilePath}", fullPath);
+            return relativePath; // Return relative path for database storage
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error saving file: {FileName}", fileName);
+            _logger.LogError(ex, "Error saving file to: {RelativePath}", relativePath);
             throw;
         }
     }
 
-    public async Task<(Stream FileStream, string ContentType)> GetFileAsync(string filePath, CancellationToken cancellationToken = default)
+    public async Task<Stream?> GetFileAsync(string relativePath, CancellationToken cancellationToken = default)
     {
         try
         {
-            var fullPath = Path.Combine(_storageDirectory, filePath);
+            var fullPath = Path.Combine(_storageDirectory, relativePath);
 
             if (!File.Exists(fullPath))
             {
                 _logger.LogWarning("File not found: {FilePath}", fullPath);
-                throw new FileNotFoundException($"File not found: {filePath}");
+                return null;
             }
 
             // Open file stream for reading
             var fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true);
-            
-            // Determine content type based on extension
-            var contentType = GetContentType(filePath);
 
-            _logger.LogInformation("Retrieved file: {FilePath}", filePath);
-            return (fileStream, contentType);
+            _logger.LogInformation("Retrieved file: {FilePath}", relativePath);
+            return fileStream;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error retrieving file: {FilePath}", filePath);
+            _logger.LogError(ex, "Error retrieving file: {RelativePath}", relativePath);
             throw;
         }
     }

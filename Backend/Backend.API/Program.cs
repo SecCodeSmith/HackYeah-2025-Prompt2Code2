@@ -137,6 +137,16 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "UKNF Communication Platform API v1");
     });
 }
+else
+{
+    // Enable HSTS (HTTP Strict Transport Security) in production
+    app.UseHsts();
+}
+
+// Redirect HTTP to HTTPS
+// Note: Commented out for Docker development environment
+// Uncomment for production deployment with SSL certificates
+// app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
 
