@@ -7,6 +7,7 @@ public interface IUnitOfWork : IDisposable
     IAttachmentRepository Attachments { get; }
     IAnnouncementRepository Announcements { get; }
     IPodmiotRepository Podmioty { get; }
+    IMessageRepository Messages { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task BeginTransactionAsync(CancellationToken cancellationToken = default);
     Task CommitTransactionAsync(CancellationToken cancellationToken = default);

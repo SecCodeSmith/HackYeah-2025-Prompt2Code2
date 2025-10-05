@@ -14,6 +14,7 @@ public class UnitOfWork : IUnitOfWork
     public IAttachmentRepository Attachments { get; }
     public IAnnouncementRepository Announcements { get; }
     public IPodmiotRepository Podmioty { get; }
+    public IMessageRepository Messages { get; }
 
     public UnitOfWork(
         ApplicationDbContext context,
@@ -21,7 +22,8 @@ public class UnitOfWork : IUnitOfWork
         IReportRepository reportRepository,
         IAttachmentRepository attachmentRepository,
         IAnnouncementRepository announcementRepository,
-        IPodmiotRepository podmiotRepository)
+        IPodmiotRepository podmiotRepository,
+        IMessageRepository messageRepository)
     {
         _context = context;
         Users = userRepository;
@@ -29,6 +31,7 @@ public class UnitOfWork : IUnitOfWork
         Attachments = attachmentRepository;
         Announcements = announcementRepository;
         Podmioty = podmiotRepository;
+        Messages = messageRepository;
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
