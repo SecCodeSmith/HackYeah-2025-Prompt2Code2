@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TabViewModule } from 'primeng/tabview';
 import { UserManagementComponent } from './user-management.component';
+import { PodmiotyListComponent } from './podmioty-list.component';
 
 @Component({
   selector: 'app-admin',
@@ -12,7 +13,8 @@ import { UserManagementComponent } from './user-management.component';
     CommonModule,
     RouterModule,
     TabViewModule,
-    UserManagementComponent
+    UserManagementComponent,
+    PodmiotyListComponent
   ],
   template: `
     <div class="container mx-auto px-4 py-6">
@@ -24,6 +26,10 @@ import { UserManagementComponent } from './user-management.component';
       <p-tabView>
         <p-tabPanel header="User Management" leftIcon="pi pi-users">
           <app-user-management></app-user-management>
+        </p-tabPanel>
+        
+        <p-tabPanel header="Entity Management" leftIcon="pi pi-building">
+          <app-podmioty-list></app-podmioty-list>
         </p-tabPanel>
         
         <p-tabPanel header="System Settings" leftIcon="pi pi-cog">

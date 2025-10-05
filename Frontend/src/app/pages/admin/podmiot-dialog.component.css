@@ -1,0 +1,76 @@
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-field-full {
+  grid-column: 1 / -1;
+}
+
+.form-field label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.form-field input,
+.form-field textarea,
+.form-field ::ng-deep .p-dropdown,
+.form-field ::ng-deep .p-calendar {
+  width: 100%;
+}
+
+.form-field ::ng-deep .p-dropdown {
+  min-width: 100%;
+}
+
+.form-field small.p-error {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.form-field input.ng-invalid.ng-dirty,
+.form-field textarea.ng-invalid.ng-dirty,
+.form-field ::ng-deep .p-dropdown.ng-invalid.ng-dirty .p-dropdown-label,
+.form-field ::ng-deep .p-calendar.ng-invalid.ng-dirty input {
+  border-color: #ef4444;
+}
+
+::ng-deep .p-dialog .p-dialog-header {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+::ng-deep .p-dialog .p-dialog-content {
+  padding: 1.5rem;
+}
+
+::ng-deep .p-dialog .p-dialog-footer {
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .form-field-full {
+    grid-column: 1;
+  }
+}

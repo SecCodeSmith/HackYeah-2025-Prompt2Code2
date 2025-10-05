@@ -1,0 +1,269 @@
+<p-dialog 
+  [(visible)]="visible" 
+  [header]="isEditMode ? 'Edytuj Podmiot' : 'Nowy Podmiot'"
+  [modal]="true"
+  [style]="{width: '50vw'}"
+  [breakpoints]="{'960px': '75vw', '640px': '90vw'}"
+  (onHide)="onCancel()">
+  
+  <form [formGroup]="podmiotForm">
+    <div class="form-grid">
+      <!-- Kod UKNF -->
+      <div class="form-field">
+        <label for="kodUKNF">Kod UKNF *</label>
+        <input 
+          pInputText 
+          id="kodUKNF" 
+          formControlName="kodUKNF"
+          [class.ng-invalid]="isFieldInvalid('kodUKNF')"
+          [class.ng-dirty]="podmiotForm.get('kodUKNF')?.touched"
+        />
+        <small class="p-error" *ngIf="isFieldInvalid('kodUKNF')">
+          {{ getFieldError('kodUKNF') }}
+        </small>
+      </div>
+
+      <!-- Nazwa -->
+      <div class="form-field">
+        <label for="nazwa">Nazwa *</label>
+        <input 
+          pInputText 
+          id="nazwa" 
+          formControlName="nazwa"
+          [class.ng-invalid]="isFieldInvalid('nazwa')"
+          [class.ng-dirty]="podmiotForm.get('nazwa')?.touched"
+        />
+        <small class="p-error" *ngIf="isFieldInvalid('nazwa')">
+          {{ getFieldError('nazwa') }}
+        </small>
+      </div>
+
+      <!-- Typ Podmiotu -->
+      <div class="form-field">
+        <label for="typPodmiotu">Typ Podmiotu *</label>
+        <p-dropdown 
+          id="typPodmiotu"
+          formControlName="typPodmiotu"
+          [options]="typPodmiotuOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Wybierz typ"
+          [showClear]="false"
+          [class.ng-invalid]="isFieldInvalid('typPodmiotu')"
+          [class.ng-dirty]="podmiotForm.get('typPodmiotu')?.touched"
+        ></p-dropdown>
+        <small class="p-error" *ngIf="isFieldInvalid('typPodmiotu')">
+          {{ getFieldError('typPodmiotu') }}
+        </small>
+      </div>
+
+      <!-- NIP -->
+      <div class="form-field">
+        <label for="nip">NIP</label>
+        <input 
+          pInputText 
+          id="nip" 
+          formControlName="nip"
+          [class.ng-invalid]="isFieldInvalid('nip')"
+          [class.ng-dirty]="podmiotForm.get('nip')?.touched"
+        />
+        <small class="p-error" *ngIf="isFieldInvalid('nip')">
+          {{ getFieldError('nip') }}
+        </small>
+      </div>
+
+      <!-- REGON -->
+      <div class="form-field">
+        <label for="regon">REGON</label>
+        <input 
+          pInputText 
+          id="regon" 
+          formControlName="regon"
+          [class.ng-invalid]="isFieldInvalid('regon')"
+          [class.ng-dirty]="podmiotForm.get('regon')?.touched"
+        />
+        <small class="p-error" *ngIf="isFieldInvalid('regon')">
+          {{ getFieldError('regon') }}
+        </small>
+      </div>
+
+      <!-- KRS -->
+      <div class="form-field">
+        <label for="krs">KRS</label>
+        <input 
+          pInputText 
+          id="krs" 
+          formControlName="krs"
+          [class.ng-invalid]="isFieldInvalid('krs')"
+          [class.ng-dirty]="podmiotForm.get('krs')?.touched"
+        />
+        <small class="p-error" *ngIf="isFieldInvalid('krs')">
+          {{ getFieldError('krs') }}
+        </small>
+      </div>
+
+      <!-- Email -->
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input 
+          pInputText 
+          id="email" 
+          formControlName="email"
+          type="email"
+          [class.ng-invalid]="isFieldInvalid('email')"
+          [class.ng-dirty]="podmiotForm.get('email')?.touched"
+        />
+        <small class="p-error" *ngIf="isFieldInvalid('email')">
+          {{ getFieldError('email') }}
+        </small>
+      </div>
+
+      <!-- Telefon -->
+      <div class="form-field">
+        <label for="telefon">Telefon</label>
+        <input 
+          pInputText 
+          id="telefon" 
+          formControlName="telefon"
+          [class.ng-invalid]="isFieldInvalid('telefon')"
+          [class.ng-dirty]="podmiotForm.get('telefon')?.touched"
+        />
+        <small class="p-error" *ngIf="isFieldInvalid('telefon')">
+          {{ getFieldError('telefon') }}
+        </small>
+      </div>
+
+      <!-- Adres -->
+      <div class="form-field">
+        <label for="adres">Adres</label>
+        <input 
+          pInputText 
+          id="adres" 
+          formControlName="adres"
+          [class.ng-invalid]="isFieldInvalid('adres')"
+          [class.ng-dirty]="podmiotForm.get('adres')?.touched"
+        />
+        <small class="p-error" *ngIf="isFieldInvalid('adres')">
+          {{ getFieldError('adres') }}
+        </small>
+      </div>
+
+      <!-- Miasto -->
+      <div class="form-field">
+        <label for="miasto">Miasto</label>
+        <input 
+          pInputText 
+          id="miasto" 
+          formControlName="miasto"
+          [class.ng-invalid]="isFieldInvalid('miasto')"
+          [class.ng-dirty]="podmiotForm.get('miasto')?.touched"
+        />
+        <small class="p-error" *ngIf="isFieldInvalid('miasto')">
+          {{ getFieldError('miasto') }}
+        </small>
+      </div>
+
+      <!-- Kod Pocztowy -->
+      <div class="form-field">
+        <label for="kodPocztowy">Kod Pocztowy</label>
+        <input 
+          pInputText 
+          id="kodPocztowy" 
+          formControlName="kodPocztowy"
+          [class.ng-invalid]="isFieldInvalid('kodPocztowy')"
+          [class.ng-dirty]="podmiotForm.get('kodPocztowy')?.touched"
+        />
+        <small class="p-error" *ngIf="isFieldInvalid('kodPocztowy')">
+          {{ getFieldError('kodPocztowy') }}
+        </small>
+      </div>
+
+      <!-- Status -->
+      <div class="form-field">
+        <label for="status">Status *</label>
+        <p-dropdown 
+          id="status"
+          formControlName="status"
+          [options]="statusOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Wybierz status"
+          [showClear]="false"
+          [class.ng-invalid]="isFieldInvalid('status')"
+          [class.ng-dirty]="podmiotForm.get('status')?.touched"
+        ></p-dropdown>
+        <small class="p-error" *ngIf="isFieldInvalid('status')">
+          {{ getFieldError('status') }}
+        </small>
+      </div>
+
+      <!-- Data Rejestracji UKNF -->
+      <div class="form-field">
+        <label for="dataRejestracjiUKNF">Data Rejestracji UKNF *</label>
+        <p-calendar 
+          id="dataRejestracjiUKNF"
+          formControlName="dataRejestracjiUKNF"
+          dateFormat="yy-mm-dd"
+          [showIcon]="true"
+          [showButtonBar]="true"
+          [class.ng-invalid]="isFieldInvalid('dataRejestracjiUKNF')"
+          [class.ng-dirty]="podmiotForm.get('dataRejestracjiUKNF')?.touched"
+        ></p-calendar>
+        <small class="p-error" *ngIf="isFieldInvalid('dataRejestracjiUKNF')">
+          {{ getFieldError('dataRejestracjiUKNF') }}
+        </small>
+      </div>
+
+      <!-- Data Zawieszenia -->
+      <div class="form-field">
+        <label for="dataZawieszenia">Data Zawieszenia</label>
+        <p-calendar 
+          id="dataZawieszenia"
+          formControlName="dataZawieszenia"
+          dateFormat="yy-mm-dd"
+          [showIcon]="true"
+          [showButtonBar]="true"
+          [class.ng-invalid]="isFieldInvalid('dataZawieszenia')"
+          [class.ng-dirty]="podmiotForm.get('dataZawieszenia')?.touched"
+        ></p-calendar>
+        <small class="p-error" *ngIf="isFieldInvalid('dataZawieszenia')">
+          {{ getFieldError('dataZawieszenia') }}
+        </small>
+      </div>
+
+      <!-- Uwagi -->
+      <div class="form-field form-field-full">
+        <label for="uwagi">Uwagi</label>
+        <textarea 
+          pInputTextarea
+          id="uwagi" 
+          formControlName="uwagi"
+          rows="3"
+          [class.ng-invalid]="isFieldInvalid('uwagi')"
+          [class.ng-dirty]="podmiotForm.get('uwagi')?.touched"
+        ></textarea>
+        <small class="p-error" *ngIf="isFieldInvalid('uwagi')">
+          {{ getFieldError('uwagi') }}
+        </small>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <button 
+      pButton 
+      label="Anuluj" 
+      icon="pi pi-times" 
+      class="p-button-text"
+      (click)="onCancel()"
+    ></button>
+    <button 
+      pButton 
+      label="Zapisz" 
+      icon="pi pi-check" 
+      [loading]="saving"
+      [disabled]="!podmiotForm.valid"
+      (click)="save()"
+    ></button>
+  </ng-template>
+</p-dialog>
