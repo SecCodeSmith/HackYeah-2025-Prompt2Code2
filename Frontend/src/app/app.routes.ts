@@ -22,6 +22,31 @@ export const routes: Routes = [
     canActivate: [authGuard, adminGuard]
   },
   {
+    path: 'messaging/inbox',
+    loadComponent: () => import('./pages/messaging/inbox.component').then(m => m.InboxComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'messaging/sent',
+    loadComponent: () => import('./pages/messaging/sent-messages.component').then(m => m.SentMessagesComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'messaging/compose',
+    loadComponent: () => import('./pages/messaging/compose-message.component').then(m => m.ComposeMessageComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'messaging/thread/:id',
+    loadComponent: () => import('./pages/messaging/message-thread.component').then(m => m.MessageThreadComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'messaging',
+    redirectTo: 'messaging/inbox',
+    pathMatch: 'full'
+  },
+  {
     path: '**',
     redirectTo: ''
   }
